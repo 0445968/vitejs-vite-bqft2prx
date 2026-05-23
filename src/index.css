@@ -1,0 +1,207 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+
+  --qu-bg: #f7f4ef;
+  --qu-surface: #ffffff;
+  --qu-surface-soft: #fbfaf8;
+  --qu-border: #e6ded3;
+  --qu-text: #1f1b16;
+  --qu-muted: #756d64;
+  --qu-accent: #ff6d3a;
+  --qu-accent-soft: #fff0e8;
+  --qu-accent-strong: #e9531f;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --qu-bg: #111018;
+  --qu-surface: #181722;
+  --qu-surface-soft: #201f2c;
+  --qu-border: #302d3d;
+  --qu-text: #f4f1ea;
+  --qu-muted: #aaa3b5;
+  --qu-accent: #ff7a45;
+  --qu-accent-soft: rgba(255, 122, 69, 0.13);
+  --qu-accent-strong: #ff8758;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: radial-gradient(
+      circle at 18% 0%,
+      rgba(255, 109, 58, 0.16),
+      transparent 26rem
+    ),
+    radial-gradient(
+      circle at 100% 12%,
+      rgba(126, 87, 194, 0.1),
+      transparent 28rem
+    ),
+    var(--qu-bg);
+  color: var(--qu-text);
+}
+
+.dark body {
+  background: radial-gradient(
+      circle at 18% 0%,
+      rgba(255, 122, 69, 0.16),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 100% 8%,
+      rgba(126, 87, 194, 0.22),
+      transparent 32rem
+    ),
+    var(--qu-bg);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+@layer components {
+  .hub-card {
+    background: var(--qu-surface);
+    border: 1px solid var(--qu-border);
+    box-shadow: 0 18px 45px rgba(39, 31, 24, 0.07);
+  }
+
+  .dark .hub-card {
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
+  }
+
+  .hub-panel {
+    background: color-mix(in srgb, var(--qu-surface) 88%, transparent);
+    border: 1px solid var(--qu-border);
+    backdrop-filter: blur(18px);
+  }
+
+  .hub-input {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid var(--qu-border);
+    background: var(--qu-surface);
+    padding: 0.8rem 1rem;
+    font-size: 0.875rem;
+    color: var(--qu-text);
+    outline: none;
+    transition: border-color 160ms ease, box-shadow 160ms ease,
+      background 160ms ease;
+  }
+
+  .hub-input::placeholder {
+    color: var(--qu-muted);
+  }
+
+  .hub-input:focus {
+    border-color: var(--qu-accent);
+    box-shadow: 0 0 0 4px var(--qu-accent-soft);
+  }
+
+  .hub-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 14px;
+    background: var(--qu-accent);
+    padding: 0.8rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: white;
+    transition: transform 160ms ease, background 160ms ease,
+      box-shadow 160ms ease;
+    box-shadow: 0 10px 24px rgba(255, 109, 58, 0.25);
+  }
+
+  .hub-button:hover {
+    transform: translateY(-1px);
+    background: var(--qu-accent-strong);
+  }
+
+  .hub-button:active {
+    transform: translateY(0);
+  }
+
+  .hub-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .hub-secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 14px;
+    border: 1px solid var(--qu-border);
+    background: var(--qu-surface);
+    padding: 0.8rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--qu-text);
+    transition: transform 160ms ease, background 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .hub-secondary-button:hover {
+    transform: translateY(-1px);
+    border-color: var(--qu-accent);
+    background: var(--qu-accent-soft);
+  }
+
+  .hub-icon-button {
+    display: inline-flex;
+    height: 2.5rem;
+    width: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    border: 1px solid var(--qu-border);
+    background: var(--qu-surface);
+    color: var(--qu-muted);
+    transition: transform 160ms ease, color 160ms ease, background 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .hub-icon-button:hover {
+    transform: translateY(-1px);
+    border-color: var(--qu-accent);
+    background: var(--qu-accent-soft);
+    color: var(--qu-accent);
+  }
+
+  .hub-badge {
+    border-radius: 999px;
+    background: var(--qu-accent-soft);
+    padding: 0.25rem 0.65rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--qu-accent-strong);
+  }
+
+  .hub-muted {
+    color: var(--qu-muted);
+  }
+}
