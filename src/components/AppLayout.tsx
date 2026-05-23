@@ -2,7 +2,6 @@ import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 
 import { Header } from './Header';
-import { Sidebar } from './Sidebar';
 
 export function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);

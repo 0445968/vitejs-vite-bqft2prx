@@ -6,11 +6,13 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
+    "lint": "^1.2.2",
     "lucide-react": "latest",
     "qrcode": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest",
+    "typecheck": "^0.1.2",
     "vite": "latest"
   },
   "devDependencies": {
