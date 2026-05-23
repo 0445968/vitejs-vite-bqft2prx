@@ -5,29 +5,39 @@
 :root {
   color-scheme: light;
 
-  --qu-bg: #f7f4ef;
+  --qu-bg: #f6f7f8;
   --qu-surface: #ffffff;
-  --qu-surface-soft: #fbfaf8;
-  --qu-border: #e6ded3;
-  --qu-text: #1f1b16;
-  --qu-muted: #756d64;
-  --qu-accent: #ff6d3a;
-  --qu-accent-soft: #fff0e8;
-  --qu-accent-strong: #e9531f;
+  --qu-surface-soft: #f2f6f8;
+  --qu-border: #e7ebef;
+  --qu-text: #171717;
+  --qu-muted: #6f7782;
+
+  --qu-accent: #ffb800;
+  --qu-accent-soft: #fff4cf;
+  --qu-accent-strong: #f59e0b;
+
+  --qu-blue: #145dbf;
+  --qu-blue-soft: #eaf3ff;
+  --qu-danger: #ff4f5e;
 }
 
 .dark {
   color-scheme: dark;
 
-  --qu-bg: #111018;
-  --qu-surface: #181722;
-  --qu-surface-soft: #201f2c;
-  --qu-border: #302d3d;
-  --qu-text: #f4f1ea;
-  --qu-muted: #aaa3b5;
-  --qu-accent: #ff7a45;
-  --qu-accent-soft: rgba(255, 122, 69, 0.13);
-  --qu-accent-strong: #ff8758;
+  --qu-bg: #070b1c;
+  --qu-surface: #111832;
+  --qu-surface-soft: #172141;
+  --qu-border: rgba(255, 255, 255, 0.1);
+  --qu-text: #f7f9ff;
+  --qu-muted: #9ca8c7;
+
+  --qu-accent: #4f7cff;
+  --qu-accent-soft: rgba(79, 124, 255, 0.16);
+  --qu-accent-strong: #7ea0ff;
+
+  --qu-blue: #6d8dff;
+  --qu-blue-soft: rgba(79, 124, 255, 0.14);
+  --qu-danger: #ff6b8a;
 }
 
 * {
@@ -41,34 +51,26 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: radial-gradient(
-      circle at 18% 0%,
-      rgba(255, 109, 58, 0.16),
-      transparent 26rem
-    ),
-    radial-gradient(
-      circle at 100% 12%,
-      rgba(126, 87, 194, 0.1),
-      transparent 28rem
-    ),
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255, 184, 0, 0.16), transparent 26rem),
+    radial-gradient(circle at 100% 10%, rgba(20, 93, 191, 0.1), transparent 30rem),
     var(--qu-bg);
   color: var(--qu-text);
 }
 
 .dark body {
-  background: radial-gradient(
-      circle at 18% 0%,
-      rgba(255, 122, 69, 0.16),
-      transparent 28rem
-    ),
-    radial-gradient(
-      circle at 100% 8%,
-      rgba(126, 87, 194, 0.22),
-      transparent 32rem
-    ),
-    var(--qu-bg);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(79, 124, 255, 0.22), transparent 30rem),
+    radial-gradient(circle at 100% 20%, rgba(120, 85, 255, 0.18), transparent 32rem),
+    linear-gradient(180deg, #0b1230 0%, #050816 100%);
 }
 
 button,
@@ -82,29 +84,36 @@ select {
   .hub-card {
     background: var(--qu-surface);
     border: 1px solid var(--qu-border);
-    box-shadow: 0 18px 45px rgba(39, 31, 24, 0.07);
+    box-shadow: 0 20px 50px rgba(17, 24, 39, 0.08);
   }
 
   .dark .hub-card {
-    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
+      var(--qu-surface);
+    box-shadow:
+      0 24px 70px rgba(0, 0, 0, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .hub-panel {
-    background: color-mix(in srgb, var(--qu-surface) 88%, transparent);
+    background: color-mix(in srgb, var(--qu-surface) 90%, transparent);
     border: 1px solid var(--qu-border);
     backdrop-filter: blur(18px);
   }
 
   .hub-input {
     width: 100%;
-    border-radius: 14px;
+    border-radius: 16px;
     border: 1px solid var(--qu-border);
-    background: var(--qu-surface);
-    padding: 0.8rem 1rem;
+    background: var(--qu-surface-soft);
+    padding: 0.85rem 1rem;
     font-size: 0.875rem;
     color: var(--qu-text);
     outline: none;
-    transition: border-color 160ms ease, box-shadow 160ms ease,
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
       background 160ms ease;
   }
 
@@ -124,13 +133,20 @@ select {
     gap: 0.5rem;
     border-radius: 14px;
     background: var(--qu-accent);
-    padding: 0.8rem 1rem;
+    padding: 0.85rem 1.05rem;
     font-size: 0.875rem;
-    font-weight: 700;
-    color: white;
-    transition: transform 160ms ease, background 160ms ease,
+    font-weight: 900;
+    color: #161616;
+    transition:
+      transform 160ms ease,
+      background 160ms ease,
       box-shadow 160ms ease;
-    box-shadow: 0 10px 24px rgba(255, 109, 58, 0.25);
+    box-shadow: 0 12px 26px rgba(255, 184, 0, 0.26);
+  }
+
+  .dark .hub-button {
+    color: white;
+    box-shadow: 0 0 30px rgba(79, 124, 255, 0.25);
   }
 
   .hub-button:hover {
@@ -142,13 +158,6 @@ select {
     transform: translateY(0);
   }
 
-  .hub-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-    transform: none;
-    box-shadow: none;
-  }
-
   .hub-secondary-button {
     display: inline-flex;
     align-items: center;
@@ -157,11 +166,13 @@ select {
     border-radius: 14px;
     border: 1px solid var(--qu-border);
     background: var(--qu-surface);
-    padding: 0.8rem 1rem;
+    padding: 0.85rem 1.05rem;
     font-size: 0.875rem;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--qu-text);
-    transition: transform 160ms ease, background 160ms ease,
+    transition:
+      transform 160ms ease,
+      background 160ms ease,
       border-color 160ms ease;
   }
 
@@ -181,7 +192,10 @@ select {
     border: 1px solid var(--qu-border);
     background: var(--qu-surface);
     color: var(--qu-muted);
-    transition: transform 160ms ease, color 160ms ease, background 160ms ease,
+    transition:
+      transform 160ms ease,
+      color 160ms ease,
+      background 160ms ease,
       border-color 160ms ease;
   }
 
@@ -189,7 +203,7 @@ select {
     transform: translateY(-1px);
     border-color: var(--qu-accent);
     background: var(--qu-accent-soft);
-    color: var(--qu-accent);
+    color: var(--qu-accent-strong);
   }
 
   .hub-badge {
@@ -197,7 +211,7 @@ select {
     background: var(--qu-accent-soft);
     padding: 0.25rem 0.65rem;
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 900;
     color: var(--qu-accent-strong);
   }
 
