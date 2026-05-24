@@ -33,7 +33,7 @@ import {
   UUIDGeneratorTool,
 } from '../tools/developer';
 
-import { QRStudio } from '../tools/design';
+import { ColorStudio, QRStudio } from '../tools/design';
 
 export type ToolCategorySlug =
   | 'developer'
@@ -377,6 +377,16 @@ export const toolCategories: ToolCategory[] = [
         status: 'ready',
         layout: 'immersive',
         keywords: ['qr', 'qr code', 'barcode', 'scan', 'generator'],
+      },
+      {
+        id: 'color-studio',
+        name: 'Color Studio',
+        description:
+          'Generate palettes, lock swatches, check contrast, preview gradients, and export CSS, Tailwind, or JSON color tokens.',
+        icon: Palette,
+        component: ColorStudio,
+        status: 'ready',
+        keywords: ['color', 'palette', 'coolors', 'gradient', 'contrast', 'hex', 'css'],
       },
       {
         id: 'barcode-generator',

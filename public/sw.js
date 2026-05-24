@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quickutility-hub-v1';
+const CACHE_NAME = 'quickutility-hub-v2';
 
 const STATIC_ASSETS = ['/', '/manifest.webmanifest'];
 
