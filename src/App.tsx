@@ -5,6 +5,7 @@ import { Dashboard } from './pages/Dashboard';
 import { NotFound } from './pages/NotFound';
 import { PasswordGenerator } from './pages/PasswordGenerator';
 import { QRTool } from './pages/QRTool';
+import { ToolCategoryRoute } from './pages/ToolCategoryRoute';
 
 export default function App() {
   return (
@@ -12,6 +13,11 @@ export default function App() {
       <Route element={<AppLayout />}>
         <Route index element={<Dashboard />} />
 
+        {/* New scalable category routes */}
+        <Route path="/tools" element={<Navigate to="/tools/developer" replace />} />
+        <Route path="/tools/:categorySlug" element={<ToolCategoryRoute />} />
+
+        {/* Keep original individual tool routes working */}
         <Route path="/tools/qr-code" element={<QRTool />} />
         <Route
           path="/tools/password-generator"

@@ -50,7 +50,7 @@ export const tools: ToolItem[] = [
     path: '/tools/tip-calculator',
     icon: Calculator,
     phase: 2,
-    available: false,
+    available: true,
   },
   {
     name: 'Age / Date Calculator',
@@ -58,7 +58,7 @@ export const tools: ToolItem[] = [
     path: '/tools/age-date-calculator',
     icon: CalendarDays,
     phase: 2,
-    available: false,
+    available: true,
   },
   {
     name: 'Decision Maker',
@@ -66,7 +66,7 @@ export const tools: ToolItem[] = [
     path: '/tools/decision-maker',
     icon: Shuffle,
     phase: 2,
-    available: false,
+    available: true,
   },
   {
     name: 'BMI / Health Calculator',
@@ -74,7 +74,7 @@ export const tools: ToolItem[] = [
     path: '/tools/bmi-health-calculator',
     icon: HeartPulse,
     phase: 2,
-    available: false,
+    available: true,
   },
   {
     name: 'Unit Converter',
@@ -82,7 +82,7 @@ export const tools: ToolItem[] = [
     path: '/tools/unit-converter',
     icon: Scale,
     phase: 2,
-    available: false,
+    available: true,
   },
   {
     name: 'Pomodoro Timer',
@@ -90,7 +90,7 @@ export const tools: ToolItem[] = [
     path: '/tools/pomodoro-timer',
     icon: Timer,
     phase: 3,
-    available: false,
+    available: true,
   },
   {
     name: 'World Clock',
@@ -98,7 +98,7 @@ export const tools: ToolItem[] = [
     path: '/tools/world-clock',
     icon: Clock3,
     phase: 3,
-    available: false,
+    available: true,
   },
   {
     name: 'Color Palette Generator',
@@ -106,7 +106,7 @@ export const tools: ToolItem[] = [
     path: '/tools/color-palette-generator',
     icon: Palette,
     phase: 3,
-    available: false,
+    available: true,
   },
   {
     name: 'To-Do List',
@@ -114,7 +114,7 @@ export const tools: ToolItem[] = [
     path: '/tools/todo-list',
     icon: ListTodo,
     phase: 3,
-    available: false,
+    available: true,
   },
   {
     name: 'Loan / EMI Calculator',
@@ -122,7 +122,7 @@ export const tools: ToolItem[] = [
     path: '/tools/loan-emi-calculator',
     icon: CircleDollarSign,
     phase: 3,
-    available: false,
+    available: true,
   },
   {
     name: 'Recipe Ingredient Scaler',
@@ -130,7 +130,7 @@ export const tools: ToolItem[] = [
     path: '/tools/recipe-scaler',
     icon: Utensils,
     phase: 4,
-    available: false,
+    available: true,
   },
   {
     name: 'Currency Converter',
@@ -138,7 +138,7 @@ export const tools: ToolItem[] = [
     path: '/tools/currency-converter',
     icon: WalletCards,
     phase: 4,
-    available: false,
+    available: true,
   },
   {
     name: 'Mood / Journal Tracker',
@@ -146,7 +146,7 @@ export const tools: ToolItem[] = [
     path: '/tools/mood-journal',
     icon: Smile,
     phase: 4,
-    available: false,
+    available: true,
   },
   {
     name: 'Habit Tracker',
@@ -154,7 +154,7 @@ export const tools: ToolItem[] = [
     path: '/tools/habit-tracker',
     icon: Dumbbell,
     phase: 4,
-    available: false,
+    available: true,
   },
   {
     name: 'Expense Tracker',
@@ -162,6 +162,6 @@ export const tools: ToolItem[] = [
     path: '/tools/expense-tracker',
     icon: Gauge,
     phase: 4,
-    available: false,
+    available: true,
   },
 ];

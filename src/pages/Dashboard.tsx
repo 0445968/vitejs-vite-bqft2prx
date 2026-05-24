@@ -45,8 +45,8 @@ const trustItems = [
   },
   {
     icon: BadgeCheck,
-    title: '17 tools planned',
-    description: 'Built in clean phases',
+    title: '1000s of tools',
+    description: 'For personal and business',
   },
 ];
 
