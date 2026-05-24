@@ -4,7 +4,6 @@ import { AppLayout } from './components/AppLayout';
 import { Dashboard } from './pages/Dashboard';
 import { NotFound } from './pages/NotFound';
 import { PasswordGenerator } from './pages/PasswordGenerator';
-import { QRTool } from './pages/QRTool';
 import { ToolCategoryRoute } from './pages/ToolCategoryRoute';
 
 export default function App() {
@@ -18,7 +17,10 @@ export default function App() {
         <Route path="/tools/:categorySlug" element={<ToolCategoryRoute />} />
 
         {/* Keep original individual tool routes working */}
-        <Route path="/tools/qr-code" element={<QRTool />} />
+        <Route
+          path="/tools/qr-code"
+          element={<Navigate to="/tools/design?tool=qr-studio" replace />}
+        />
         <Route
           path="/tools/password-generator"
           element={<PasswordGenerator />}

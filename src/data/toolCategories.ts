@@ -16,6 +16,7 @@ import {
   Link2,
   Network,
   Paintbrush,
+  QrCode,
   Regex,
   ShieldCheck,
   Wand2,
@@ -31,6 +32,8 @@ import {
   UrlEncoderDecoderTool,
   UUIDGeneratorTool,
 } from '../tools/developer';
+
+import { QRStudio } from '../tools/design';
 
 export type ToolCategorySlug =
   | 'developer'
@@ -49,6 +52,7 @@ export type CategoryTool = {
   component?: React.ComponentType;
   status: 'ready' | 'soon';
   keywords?: string[];
+  layout?: 'standard' | 'immersive';
 };
 
 export type ToolCategory = {
@@ -363,18 +367,53 @@ export const toolCategories: ToolCategory[] = [
       'Generate, calculate, check, and tune design values for UI work.',
     icon: Paintbrush,
     tools: [
-      'Barcode Generator',
-      'Contrast Checker',
-      'Pixel to REM Converter',
-      'Shadow Generator',
-      'Border Radius Generator',
-    ].map((name) => ({
-      id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-      name,
-      description: `${name} is planned for this category.`,
-      icon: name === 'Barcode Generator' ? Barcode : Paintbrush,
-      status: 'soon' as const,
-    })),
+      {
+        id: 'qr-studio',
+        name: 'QR Studio',
+        description:
+          'Create custom QR codes with content types, colors, frames, logos, and downloadable PNG output.',
+        icon: QrCode,
+        component: QRStudio,
+        status: 'ready',
+        layout: 'immersive',
+        keywords: ['qr', 'qr code', 'barcode', 'scan', 'generator'],
+      },
+      {
+        id: 'barcode-generator',
+        name: 'Barcode Generator',
+        description: 'Generate EAN, UPC, and other barcode formats.',
+        icon: Barcode,
+        status: 'soon',
+      },
+      {
+        id: 'contrast-checker',
+        name: 'Contrast Checker',
+        description: 'Check color contrast for accessible UI design.',
+        icon: Paintbrush,
+        status: 'soon',
+      },
+      {
+        id: 'pixel-to-rem-converter',
+        name: 'Pixel to REM Converter',
+        description: 'Convert pixel values to REM units.',
+        icon: Paintbrush,
+        status: 'soon',
+      },
+      {
+        id: 'shadow-generator',
+        name: 'Shadow Generator',
+        description: 'Create CSS box-shadow styles visually.',
+        icon: Paintbrush,
+        status: 'soon',
+      },
+      {
+        id: 'border-radius-generator',
+        name: 'Border Radius Generator',
+        description: 'Create and preview CSS border-radius values.',
+        icon: Paintbrush,
+        status: 'soon',
+      },
+    ],
   },
 ];
 

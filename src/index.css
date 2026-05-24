@@ -5,39 +5,42 @@
 :root {
   color-scheme: light;
 
-  --qu-bg: #f6f7f8;
+  --qu-bg: #f8fafc;
   --qu-surface: #ffffff;
-  --qu-surface-soft: #f2f6f8;
-  --qu-border: #e7ebef;
-  --qu-text: #171717;
-  --qu-muted: #6f7782;
+  --qu-surface-soft: #f1f5f9;
+  --qu-border: #e2e8f0;
+  --qu-text: #0f172a;
+  --qu-muted: #64748b;
 
   --qu-accent: #4f7cff;
-  --qu-accent-soft: #eaf0ff;
-  --qu-accent-strong: #2f5ee8;
+  --qu-accent-soft: #eff6ff;
+  --qu-accent-strong: #3b60e4;
 
-  --qu-blue: #145dbf;
-  --qu-blue-soft: #eaf3ff;
-  --qu-danger: #ff4f5e;
+  --qu-blue: #2563eb;
+  --qu-blue-soft: #dbeafe;
+  --qu-danger: #ef4444;
+  
+  /* Added a generic transition curve for modern snappiness */
+  --qu-transition: 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark {
   color-scheme: dark;
 
-  --qu-bg: #070b1c;
-  --qu-surface: #111832;
-  --qu-surface-soft: #172141;
-  --qu-border: rgba(255, 255, 255, 0.1);
-  --qu-text: #f7f9ff;
-  --qu-muted: #9ca8c7;
+  --qu-bg: #030712;
+  --qu-surface: #0f172a;
+  --qu-surface-soft: #1e293b;
+  --qu-border: rgba(255, 255, 255, 0.08);
+  --qu-text: #f8fafc;
+  --qu-muted: #94a3b8;
 
-  --qu-accent: #4f7cff;
-  --qu-accent-soft: rgba(79, 124, 255, 0.16);
-  --qu-accent-strong: #7ea0ff;
+  --qu-accent: #6084ff;
+  --qu-accent-soft: rgba(96, 132, 255, 0.12);
+  --qu-accent-strong: #809fff;
 
-  --qu-blue: #6d8dff;
-  --qu-blue-soft: rgba(79, 124, 255, 0.14);
-  --qu-danger: #ff6b8a;
+  --qu-blue: #60a5fa;
+  --qu-blue-soft: rgba(96, 165, 250, 0.12);
+  --qu-danger: #f87171;
 }
 
 * {
@@ -59,18 +62,24 @@ body {
     BlinkMacSystemFont,
     'Segoe UI',
     sans-serif;
+  
+  /* Made gradients softer, wider, and fixed in place */
   background:
-    radial-gradient(circle at 14% 0%, rgba(255, 184, 0, 0.16), transparent 26rem),
-    radial-gradient(circle at 100% 10%, rgba(20, 93, 191, 0.1), transparent 30rem),
+    radial-gradient(circle at 15% 0%, rgba(255, 184, 0, 0.12), transparent 40rem),
+    radial-gradient(circle at 85% 15%, rgba(37, 99, 235, 0.08), transparent 45rem),
     var(--qu-bg);
+  background-attachment: fixed;
   color: var(--qu-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .dark body {
   background:
-    radial-gradient(circle at 20% 0%, rgba(79, 124, 255, 0.22), transparent 30rem),
-    radial-gradient(circle at 100% 20%, rgba(120, 85, 255, 0.18), transparent 32rem),
-    linear-gradient(180deg, #0b1230 0%, #050816 100%);
+    radial-gradient(circle at 15% 0%, rgba(96, 132, 255, 0.15), transparent 45rem),
+    radial-gradient(circle at 85% 15%, rgba(128, 95, 255, 0.12), transparent 40rem),
+    linear-gradient(180deg, #020617 0%, #030712 100%);
+  background-attachment: fixed;
 }
 
 button,
@@ -81,40 +90,48 @@ select {
 }
 
 @layer components {
+  /* Modern Card: Multi-layered shadow & subtle top-highlight border */
   .hub-card {
     background: var(--qu-surface);
     border: 1px solid var(--qu-border);
-    box-shadow: 0 20px 50px rgba(17, 24, 39, 0.08);
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.02),
+      0 10px 15px -3px rgba(0, 0, 0, 0.04),
+      0 20px 40px -10px rgba(0, 0, 0, 0.03);
+    border-radius: 1.5rem;
   }
 
   .dark .hub-card {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
-      var(--qu-surface);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 40%), var(--qu-surface);
     box-shadow:
-      0 24px 70px rgba(0, 0, 0, 0.42),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      0 10px 25px -5px rgba(0, 0, 0, 0.5),
+      0 20px 40px -10px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
+  /* Frosty Glass Panel */
   .hub-panel {
-    background: color-mix(in srgb, var(--qu-surface) 90%, transparent);
+    background: color-mix(in srgb, var(--qu-surface) 80%, transparent);
     border: 1px solid var(--qu-border);
-    backdrop-filter: blur(18px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
   }
 
+  .dark .hub-panel {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* Inputs: Smoother focus rings */
   .hub-input {
     width: 100%;
-    border-radius: 16px;
+    border-radius: 1rem;
     border: 1px solid var(--qu-border);
     background: var(--qu-surface-soft);
     padding: 0.85rem 1rem;
     font-size: 0.875rem;
     color: var(--qu-text);
     outline: none;
-    transition:
-      border-color 160ms ease,
-      box-shadow 160ms ease,
-      background 160ms ease;
+    transition: all var(--qu-transition);
   }
 
   .hub-input::placeholder {
@@ -123,109 +140,125 @@ select {
 
   .hub-input:focus {
     border-color: var(--qu-accent);
-    box-shadow: 0 0 0 4px var(--qu-accent-soft);
+    background: var(--qu-surface);
+    box-shadow: 0 0 0 4px var(--qu-accent-soft), 0 2px 4px rgba(0,0,0,0.02);
   }
 
+  /* Primary Button: Gradient, inset glow, scale down on click */
   .hub-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border-radius: 14px;
-    background: var(--qu-accent);
-    padding: 0.85rem 1.05rem;
+    border-radius: 0.875rem;
+    background: linear-gradient(180deg, var(--qu-accent) 0%, var(--qu-accent-strong) 100%);
+    padding: 0.85rem 1.25rem;
     font-size: 0.875rem;
-    font-weight: 900;
-    color: #161616;
-    transition:
-      transform 160ms ease,
-      background 160ms ease,
-      box-shadow 160ms ease;
-    box-shadow: 0 12px 26px rgba(255, 184, 0, 0.26);
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.2), 
+      0 8px 16px color-mix(in srgb, var(--qu-accent) 25%, transparent);
+    transition: all var(--qu-transition);
   }
 
   .dark .hub-button {
-    color: white;
-    box-shadow: 0 0 30px rgba(79, 124, 255, 0.25);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.15), 
+      0 8px 24px color-mix(in srgb, var(--qu-accent) 30%, transparent);
   }
 
   .hub-button:hover {
     transform: translateY(-1px);
-    background: var(--qu-accent-strong);
+    filter: brightness(1.05);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.3), 
+      0 12px 20px color-mix(in srgb, var(--qu-accent) 30%, transparent);
   }
 
   .hub-button:active {
-    transform: translateY(0);
+    transform: scale(0.97);
   }
 
+  /* Secondary Button */
   .hub-secondary-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border-radius: 14px;
+    border-radius: 0.875rem;
     border: 1px solid var(--qu-border);
     background: var(--qu-surface);
-    padding: 0.85rem 1.05rem;
+    padding: 0.85rem 1.25rem;
     font-size: 0.875rem;
-    font-weight: 800;
+    font-weight: 600;
     color: var(--qu-text);
-    transition:
-      transform 160ms ease,
-      background 160ms ease,
-      border-color 160ms ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    transition: all var(--qu-transition);
   }
 
   .hub-secondary-button:hover {
-    transform: translateY(-1px);
     border-color: var(--qu-accent);
     background: var(--qu-accent-soft);
+    color: var(--qu-accent-strong);
   }
 
+  .hub-secondary-button:active {
+    transform: scale(0.97);
+  }
+
+  /* Icon Buttons */
   .hub-icon-button {
     display: inline-flex;
     height: 2.5rem;
     width: 2.5rem;
     align-items: center;
     justify-content: center;
-    border-radius: 14px;
+    border-radius: 0.75rem;
     border: 1px solid var(--qu-border);
     background: var(--qu-surface);
     color: var(--qu-muted);
-    transition:
-      transform 160ms ease,
-      color 160ms ease,
-      background 160ms ease,
-      border-color 160ms ease;
+    transition: all var(--qu-transition);
   }
 
   .hub-icon-button:hover {
-    transform: translateY(-1px);
     border-color: var(--qu-accent);
     background: var(--qu-accent-soft);
     color: var(--qu-accent-strong);
+    transform: translateY(-1px);
   }
 
+  .hub-icon-button:active {
+    transform: scale(0.94);
+  }
+
+  /* Badges */
   .hub-badge {
     border-radius: 999px;
     background: var(--qu-accent-soft);
     padding: 0.25rem 0.65rem;
     font-size: 0.7rem;
-    font-weight: 900;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     color: var(--qu-accent-strong);
+    border: 1px solid color-mix(in srgb, var(--qu-accent) 20%, transparent);
   }
 
   .hub-muted {
     color: var(--qu-muted);
   }
 
+  /* Refined Scrollbars */
   .hub-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--qu-muted) 32%, transparent) transparent;
+    scrollbar-color: color-mix(in srgb, var(--qu-muted) 30%, transparent) transparent;
   }
 
   .hub-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   .hub-scrollbar::-webkit-scrollbar-track {
@@ -234,11 +267,11 @@ select {
 
   .hub-scrollbar::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    background: color-mix(in srgb, var(--qu-muted) 28%, transparent);
+    background: color-mix(in srgb, var(--qu-muted) 30%, transparent);
   }
 
   .hub-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--qu-muted) 45%, transparent);
+    background: color-mix(in srgb, var(--qu-muted) 50%, transparent);
   }
 
   .hub-scrollbar::-webkit-scrollbar-corner {

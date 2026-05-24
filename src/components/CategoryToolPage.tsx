@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ElementType } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Check,
@@ -33,7 +33,7 @@ type WebsiteToolRef = {
   categorySlug: string;
   categoryName: string;
   status: 'ready' | 'soon';
-  icon: React.ElementType;
+  icon: ElementType;
   path?: string;
 };
 
@@ -163,7 +163,9 @@ function ToolBrowser({
 
   const toggleCategory = (slug: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(slug) ? prev.filter((c) => c !== slug) : [...prev, slug]
+      prev.includes(slug)
+        ? prev.filter((c) => c !== slug)
+        : [...prev, slug]
     );
   };
 
@@ -208,7 +210,6 @@ function ToolBrowser({
   return (
     <div className={cn('flex flex-col', !mobile && 'h-full overflow-hidden')}>
       <div className="mb-4 shrink-0 space-y-3">
-        {/* Search Input */}
         <div className="flex items-center gap-2 rounded-xl border border-[color:var(--qu-border)] bg-[color:var(--qu-surface-soft)] px-3 transition-all duration-200 focus-within:border-[color:var(--qu-accent)] focus-within:ring-4 focus-within:ring-[color:var(--qu-accent-soft)]">
           <Search className="h-4 w-4 shrink-0 hub-muted" />
 
@@ -231,7 +232,6 @@ function ToolBrowser({
           )}
         </div>
 
-        {/* Enhanced Category Filters */}
         <div className="rounded-xl border border-[color:var(--qu-border)] bg-[color:var(--qu-surface-soft)] p-3 shadow-sm">
           <button
             type="button"
@@ -250,6 +250,7 @@ function ToolBrowser({
           <div className="hub-scrollbar max-h-[160px] space-y-1 overflow-y-auto pr-1">
             {filterOptions.map((opt) => {
               const isChecked = selectedCategories.includes(opt.value);
+
               return (
                 <label
                   key={opt.value}
@@ -269,8 +270,11 @@ function ToolBrowser({
                       onChange={() => toggleCategory(opt.value)}
                       className="hidden"
                     />
-                    {isChecked && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+                    {isChecked && (
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                    )}
                   </div>
+
                   <span
                     className={cn(
                       'text-sm font-semibold transition-colors',
@@ -306,7 +310,8 @@ function ToolBrowser({
           filteredTools.map((tool) => {
             const Icon = tool.icon;
             const isActive =
-              tool.categorySlug === category.slug && selectedToolId === tool.id;
+              tool.categorySlug === category.slug &&
+              selectedToolId === tool.id;
 
             return (
               <button
@@ -384,6 +389,7 @@ export function CategoryToolPage({ category }: CategoryToolPageProps) {
   const requestedToolId = searchParams.get('tool');
 
   const defaultToolId = category.tools[0]?.id ?? '';
+
   const selectedTool =
     category.tools.find((tool) => tool.id === requestedToolId) ??
     category.tools.find((tool) => tool.id === defaultToolId) ??
@@ -400,10 +406,6 @@ export function CategoryToolPage({ category }: CategoryToolPageProps) {
       setSearchParams({ tool: defaultToolId }, { replace: true });
     }
   }, [defaultToolId, requestedToolId, setSearchParams]);
-
-  const readyCount = category.tools.filter(
-    (tool) => tool.status === 'ready'
-  ).length;
 
   const handleSelectWebsiteTool = (tool: WebsiteToolRef) => {
     setMobileToolsOpen(false);
@@ -485,108 +487,79 @@ export function CategoryToolPage({ category }: CategoryToolPageProps) {
       </aside>
 
       {/* Main content */}
-      <div className="xl:min-h-[calc(100dvh-4rem)]">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          {/* Page header */}
-          <div className="mb-6 overflow-hidden rounded-[2rem] border border-[color:var(--qu-border)] bg-[color:var(--qu-surface)] p-6 shadow-xl shadow-black/5 dark:shadow-black/30 sm:p-8">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-3xl">
-                <p className="mb-3 text-sm font-black uppercase tracking-[0.22em] text-[color:var(--qu-accent-strong)]">
-                  {category.eyebrow}
-                </p>
+      <main className="min-w-0 xl:min-h-[calc(100dvh-4rem)]">
+        {/* Tablet / mobile More tools drawer */}
+        <div className="px-4 py-4 sm:px-6 lg:px-8 xl:hidden">
+          <button
+            type="button"
+            onClick={() => setMobileToolsOpen((value) => !value)}
+            className="hub-card flex w-full items-center justify-between rounded-[1.5rem] px-4 py-4 text-left"
+          >
+            <span>
+              <span className="block text-sm font-black text-[color:var(--qu-text)]">
+                More tools
+              </span>
+              <span className="block text-xs font-semibold hub-muted">
+                Search and switch between all tools
+              </span>
+            </span>
 
-                <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[color:var(--qu-accent-soft)] text-[color:var(--qu-accent-strong)]">
-                    <category.icon className="h-7 w-7" />
-                  </div>
+            <ChevronDown
+              className={cn(
+                'h-5 w-5 text-[color:var(--qu-muted)] transition',
+                mobileToolsOpen && 'rotate-180'
+              )}
+            />
+          </button>
 
-                  <div>
-                    <h1 className="text-3xl font-black tracking-tight text-[color:var(--qu-text)] sm:text-4xl">
-                      {category.name}
-                    </h1>
-
-                    <p className="mt-2 text-sm leading-6 hub-muted sm:text-base">
-                      {category.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 sm:flex">
-                <div className="rounded-2xl bg-[color:var(--qu-surface-soft)] px-4 py-3">
-                  <p className="text-2xl font-black text-[color:var(--qu-text)]">
-                    {category.tools.length}
-                  </p>
-                  <p className="text-xs font-bold hub-muted">Tools</p>
-                </div>
-
-                <div className="rounded-2xl bg-[color:var(--qu-surface-soft)] px-4 py-3">
-                  <p className="text-2xl font-black text-[color:var(--qu-text)]">
-                    {readyCount}
-                  </p>
-                  <p className="text-xs font-bold hub-muted">Ready</p>
-                </div>
+          {mobileToolsOpen && (
+            <div className="mt-3">
+              <div className="hub-card rounded-[1.5rem] p-3">
+                <ToolBrowser
+                  category={category}
+                  selectedToolId={selectedToolId}
+                  onSelectTool={handleSelectWebsiteTool}
+                  mobile
+                />
               </div>
             </div>
-          </div>
-
-          {/* Tablet / mobile More tools drawer */}
-          <div className="mb-6 xl:hidden">
-            <button
-              type="button"
-              onClick={() => setMobileToolsOpen((value) => !value)}
-              className="hub-card flex w-full items-center justify-between rounded-[1.5rem] px-4 py-4 text-left"
-            >
-              <span>
-                <span className="block text-sm font-black text-[color:var(--qu-text)]">
-                  More tools
-                </span>
-                <span className="block text-xs font-semibold hub-muted">
-                  Search and switch between all tools
-                </span>
-              </span>
-
-              <ChevronDown
-                className={cn(
-                  'h-5 w-5 text-[color:var(--qu-muted)] transition',
-                  mobileToolsOpen && 'rotate-180'
-                )}
-              />
-            </button>
-
-            {mobileToolsOpen && (
-              <div className="mt-3">
-                <div className="hub-card rounded-[1.5rem] p-3">
-                  <ToolBrowser
-                    category={category}
-                    selectedToolId={selectedToolId}
-                    onSelectTool={handleSelectWebsiteTool}
-                    mobile
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Selected tool */}
-          {selectedTool ? (
-            SelectedComponent ? (
-              <SelectedComponent />
-            ) : (
-              <ComingSoonPanel tool={selectedTool} />
-            )
-          ) : (
-            <section className="hub-card rounded-[2rem] p-8 text-center">
-              <h2 className="text-xl font-black text-[color:var(--qu-text)]">
-                No tools available
-              </h2>
-              <p className="mt-2 hub-muted">
-                This category is ready, but tools have not been added yet.
-              </p>
-            </section>
           )}
         </div>
+
+        {/* Selected tool renders with different spacing depending on layout */}
+{selectedTool ? (
+  SelectedComponent ? (
+    selectedTool.layout === 'immersive' ? (
+      <SelectedComponent />
+    ) : (
+      <div className="px-4 py-6 sm:px-6 lg:px-8 xl:ml-[76px]">
+        <div className="mx-auto w-full max-w-7xl">
+          <SelectedComponent />
+        </div>
       </div>
+    )
+  ) : (
+    <div className="px-4 py-6 sm:px-6 lg:px-8 xl:ml-[76px]">
+      <div className="mx-auto w-full max-w-5xl">
+        <ComingSoonPanel tool={selectedTool} />
+      </div>
+    </div>
+  )
+) : (
+  <div className="px-4 py-6 sm:px-6 lg:px-8 xl:ml-[76px]">
+    <div className="mx-auto w-full max-w-5xl">
+      <section className="hub-card rounded-[2rem] p-8 text-center">
+        <h2 className="text-xl font-black text-[color:var(--qu-text)]">
+          No tools available
+        </h2>
+        <p className="mt-2 hub-muted">
+          This category is ready, but tools have not been added yet.
+        </p>
+      </section>
+    </div>
+  </div>
+)}
+      </main>
     </div>
   );
 }

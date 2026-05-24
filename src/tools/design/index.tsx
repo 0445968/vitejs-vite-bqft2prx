@@ -1,0 +1,1 @@
+export { default as QRStudio } from './qr-studio/QRStudio';

@@ -1,0 +1,150 @@
+import {
+    AlignLeft,
+    BarChart2,
+    Calendar,
+    FileText,
+    Image,
+    Link2,
+    Mail,
+    MessageSquare,
+    Phone,
+    Share2,
+    Smartphone,
+    User,
+    Video,
+    Wifi,
+  } from 'lucide-react';
+  
+  import type {
+    ColorPreset,
+    ContentTypeOption,
+    DotShape,
+    EyeInner,
+    EyeOuter,
+    FrameStyle,
+    LogoOption,
+    QRData,
+    SimpleOption,
+  } from './types';
+  
+  export const TYPES: ContentTypeOption[] = [
+    { id: 'link', label: 'Link', Icon: Link2 },
+    { id: 'text', label: 'Text', Icon: AlignLeft },
+    { id: 'email', label: 'Email', Icon: Mail },
+    { id: 'call', label: 'Call', Icon: Phone },
+    { id: 'sms', label: 'SMS', Icon: MessageSquare },
+    { id: 'vcard', label: 'vCard', Icon: User },
+    { id: 'whatsapp', label: 'WhatsApp', Icon: MessageSquare },
+    { id: 'wifi', label: 'Wi‑Fi', Icon: Wifi },
+    { id: 'pdf', label: 'PDF', Icon: FileText },
+    { id: 'app', label: 'App', Icon: Smartphone },
+    { id: 'image', label: 'Image', Icon: Image },
+    { id: 'video', label: 'Video', Icon: Video },
+    { id: 'social', label: 'Social', Icon: Share2 },
+    { id: 'event', label: 'Event', Icon: Calendar },
+    { id: 'barcode', label: '2D Barcode', Icon: BarChart2 },
+  ];
+  
+  export const DOT_SHAPES: SimpleOption<DotShape>[] = [
+    { id: 'square', label: 'Square' },
+    { id: 'rounded', label: 'Rounded' },
+    { id: 'circle', label: 'Circle' },
+    { id: 'diamond', label: 'Diamond' },
+    { id: 'star', label: 'Star' },
+    { id: 'cross', label: 'Cross' },
+    { id: 'heart', label: 'Heart' },
+    { id: 'leaf', label: 'Leaf' },
+  ];
+  
+  export const EYE_OUTER: SimpleOption<EyeOuter>[] = [
+    { id: 'sq', label: 'Square' },
+    { id: 'rnd', label: 'Rounded' },
+    { id: 'cir', label: 'Circle' },
+    { id: 'dbl', label: 'Double' },
+    { id: 'brk', label: 'Bracket' },
+    { id: 'dia', label: 'Diamond' },
+    { id: 'dts', label: 'Dots' },
+    { id: 'shld', label: 'Shield' },
+  ];
+  
+  export const EYE_INNER: SimpleOption<EyeInner>[] = [
+    { id: 'sq', label: 'Square' },
+    { id: 'rnd', label: 'Rounded' },
+    { id: 'cir', label: 'Circle' },
+    { id: 'dia', label: 'Diamond' },
+    { id: 'str', label: 'Star' },
+    { id: 'crs', label: 'Cross' },
+    { id: 'rng', label: 'Ring' },
+    { id: 'hrt', label: 'Heart' },
+  ];
+  
+  export const FRAMES: SimpleOption<FrameStyle>[] = [
+    { id: 'none', label: 'None' },
+    { id: 'thin', label: 'Thin' },
+    { id: 'round', label: 'Rounded' },
+    { id: 'dbl', label: 'Double' },
+    { id: 'scan', label: 'Scanner' },
+    { id: 'lblb', label: 'Label ↓' },
+    { id: 'lblt', label: 'Label ↑' },
+    { id: 'pol', label: 'Polaroid' },
+    { id: 'badge', label: 'Badge' },
+    { id: 'cert', label: 'Cert' },
+  ];
+  
+  export const COLOR_PRESETS: ColorPreset[] = [
+    { id: 'azure-mint', label: 'Azure Mint', primary: '#527AC9', secondary: '#7EC09F' },
+    { id: 'graphite', label: 'Graphite', primary: '#1F2937', secondary: '#111827' },
+    { id: 'ice-blue', label: 'Ice Blue', primary: '#5B7BCC', secondary: '#C7D9E8' },
+    { id: 'lavender', label: 'Lavender', primary: '#A48BCF', secondary: '#27272A' },
+    { id: 'sage', label: 'Sage', primary: '#7CB79B', secondary: '#22241F' },
+    { id: 'gold', label: 'Gold', primary: '#E2BE69', secondary: '#26261F' },
+  ];
+  
+  export const LOGOS: LogoOption[] = [
+    { id: 'none', label: 'None', bg: 'transparent', sym: '—' },
+    { id: 'scanme', label: 'Scan Me', bg: '#527AC9', sym: '⊡' },
+    { id: 'github', label: 'GitHub', bg: '#24292e', sym: 'GH' },
+    { id: 'x', label: 'X', bg: '#000000', sym: 'X' },
+    { id: 'linkedin', label: 'LinkedIn', bg: '#0077B5', sym: 'in' },
+    { id: 'instagram', label: 'Instagram', bg: '#C13584', sym: '◎' },
+    { id: 'facebook', label: 'Facebook', bg: '#1877F2', sym: 'f' },
+    { id: 'youtube', label: 'YouTube', bg: '#FF0000', sym: '▶' },
+    { id: 'whatsapp', label: 'WhatsApp', bg: '#25D366', sym: '✆' },
+    { id: 'globe', label: 'Website', bg: '#0066cc', sym: '⊕' },
+    { id: 'upload', label: 'Upload', bg: '#555577', sym: '+' },
+  ];
+  
+  export const INITIAL_DATA: QRData = {
+    link: 'https://example.com',
+    text: '',
+    emailTo: '',
+    emailSub: '',
+    emailBody: '',
+    phone: '',
+    smsTo: '',
+    smsMsg: '',
+    vcFirst: '',
+    vcLast: '',
+    vcPhone: '',
+    vcEmail: '',
+    vcOrg: '',
+    vcUrl: '',
+    waPhone: '',
+    waMsg: '',
+    wSsid: '',
+    wPass: '',
+    wEnc: 'WPA',
+    pdfUrl: '',
+    appStore: 'google',
+    appId: '',
+    imgUrl: '',
+    vidUrl: '',
+    socialNet: 'instagram',
+    socialUrl: '',
+    evTitle: '',
+    evStart: '',
+    evEnd: '',
+    evLoc: '',
+    evDesc: '',
+    barcodeData: '',
+  };
