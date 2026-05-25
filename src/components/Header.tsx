@@ -52,101 +52,103 @@ export function Header() {
           </div>
         </Link>
 
-        {/* Middle: Search Bar (Desktop/Tablet) */}
-        <div className="hidden flex-1 justify-center px-4 md:flex max-w-lg">
-          <div className="flex w-full items-center gap-2 rounded-full border border-[color:var(--qu-border)] bg-[color:var(--qu-surface-soft)] px-4 transition-all duration-200 focus-within:border-[color:var(--qu-accent)] focus-within:ring-4 focus-within:ring-[color:var(--qu-accent-soft)]">
-            {/* Slightly smaller icon to match the shorter bar */}
-            <Search className="h-3.5 w-3.5 shrink-0 hub-muted" />
-            <input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search tools..."
-              /* Changed height from h-10 to h-8 */
-              className="h-8 min-w-0 flex-1 bg-transparent text-sm font-semibold outline-none text-[color:var(--qu-text)] placeholder:text-[color:var(--qu-muted)]"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="text-[color:var(--qu-muted)] hover:text-[color:var(--qu-text)]"
-                aria-label="Clear search"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
+        {/* Right: Search, Navigation & Controls */}
+        <div className="flex flex-1 items-center justify-end gap-2 sm:gap-4 md:gap-6">
+          
+          {/* Search Bar (Desktop/Tablet) moved to the right */}
+          <div className="hidden w-full max-w-[260px] md:block">
+            <div className="flex w-full items-center gap-2 rounded-full border border-[color:var(--qu-border)] bg-[color:var(--qu-surface-soft)] px-4 transition-all duration-200 focus-within:border-[color:var(--qu-accent)] focus-within:ring-4 focus-within:ring-[color:var(--qu-accent-soft)]">
+              <Search className="h-3.5 w-3.5 shrink-0 hub-muted" />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search tools..."
+                className="h-8 min-w-0 flex-1 bg-transparent text-sm font-semibold outline-none text-[color:var(--qu-text)] placeholder:text-[color:var(--qu-muted)]"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="text-[color:var(--qu-muted)] hover:text-[color:var(--qu-text)]"
+                  aria-label="Clear search"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Right: Navigation & Controls */}
-        <div className="flex shrink-0 items-center gap-2">
-          <nav className="hidden items-center gap-1 lg:flex">
-            <div className="group relative">
-              <button
-                type="button"
-                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition text-[color:var(--qu-muted)] hover:bg-[color:var(--qu-accent-soft)] hover:text-[color:var(--qu-accent-strong)]"
-              >
-                Tools
-                <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
-              </button>
+          {/* Navigation & Menu */}
+          <div className="flex shrink-0 items-center gap-2">
+            <nav className="hidden items-center gap-1 lg:flex">
+              <div className="group relative">
+                <button
+                  type="button"
+                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition text-[color:var(--qu-muted)] hover:bg-[color:var(--qu-accent-soft)] hover:text-[color:var(--qu-accent-strong)]"
+                >
+                  Tools
+                  <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
+                </button>
 
-              <div
-                /* Added the invisible pseudo-element bridge here: before:absolute before:-top-6 before:left-0 before:h-6 before:w-full before:content-[''] */
-                className="invisible absolute right-0 top-full z-50 mt-2 w-[520px] translate-y-2 rounded-3xl border bg-[color:var(--qu-surface)] p-3 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 before:absolute before:-top-6 before:left-0 before:h-6 before:w-full before:content-['']"
-                style={{ borderColor: 'var(--qu-border)' }}
-              >
-                <div className="grid grid-cols-2 gap-2">
-                  {toolCategories.map((category) => {
-                    const Icon = category.icon;
-                    const readyCount = category.tools.filter(
-                      (tool) => tool.status === 'ready'
-                    ).length;
+                <div
+                  className="invisible absolute right-0 top-full z-50 mt-2 w-[520px] translate-y-2 rounded-3xl border bg-[color:var(--qu-surface)] p-3 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 before:absolute before:-top-6 before:left-0 before:h-6 before:w-full before:content-['']"
+                  style={{ borderColor: 'var(--qu-border)' }}
+                >
+                  <div className="grid grid-cols-2 gap-2">
+                    {toolCategories.map((category) => {
+                      const Icon = category.icon;
+                      const readyCount = category.tools.filter(
+                        (tool) => tool.status === 'ready'
+                      ).length;
 
-                    return (
-                      <NavLink
-                        key={category.slug}
-                        to={`/tools/${category.slug}`}
-                        className={({ isActive }) =>
-                          cn(
-                            'rounded-2xl p-3 transition',
-                            isActive
-                              ? 'bg-[color:var(--qu-accent-soft)]'
-                              : 'hover:bg-[color:var(--qu-surface-soft)]'
-                          )
-                        }
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[color:var(--qu-accent-soft)] text-[color:var(--qu-accent-strong)]">
-                            <Icon className="h-5 w-5" />
+                      return (
+                        <NavLink
+                          key={category.slug}
+                          to={`/tools/${category.slug}`}
+                          className={({ isActive }) =>
+                            cn(
+                              'rounded-2xl p-3 transition',
+                              isActive
+                                ? 'bg-[color:var(--qu-accent-soft)]'
+                                : 'hover:bg-[color:var(--qu-surface-soft)]'
+                            )
+                          }
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[color:var(--qu-accent-soft)] text-[color:var(--qu-accent-strong)]">
+                              <Icon className="h-5 w-5" />
+                            </div>
+
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-black text-[color:var(--qu-text)]">
+                                {category.name}
+                              </p>
+                              <p className="mt-1 line-clamp-2 text-xs leading-5 hub-muted">
+                                {category.tools.length} tools · {readyCount} ready
+                              </p>
+                            </div>
                           </div>
-
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-black text-[color:var(--qu-text)]">
-                              {category.name}
-                            </p>
-                            <p className="mt-1 line-clamp-2 text-xs leading-5 hub-muted">
-                              {category.tools.length} tools · {readyCount} ready
-                            </p>
-                          </div>
-                        </div>
-                      </NavLink>
-                    );
-                  })}
+                        </NavLink>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
+            </nav>
+
+            {/* Controls */}
+            <div className="ml-2 flex items-center gap-2 border-l border-[color:var(--qu-border)] pl-4">
+              <ThemeToggle />
+
+              <button
+                type="button"
+                onClick={() => setMobileOpen((value) => !value)}
+                className="hub-icon-button lg:hidden"
+                aria-label="Toggle menu"
+              >
+                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
             </div>
-          </nav>
-
-          <div className="ml-2 flex items-center gap-2 border-l border-[color:var(--qu-border)] pl-4">
-            <ThemeToggle />
-
-            <button
-              type="button"
-              onClick={() => setMobileOpen((value) => !value)}
-              className="hub-icon-button lg:hidden"
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
           </div>
         </div>
       </div>
@@ -164,7 +166,6 @@ export function Header() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search tools..."
-              /* Changed height here as well for consistency */
               className="h-8 min-w-0 flex-1 bg-transparent text-sm font-semibold outline-none text-[color:var(--qu-text)] placeholder:text-[color:var(--qu-muted)]"
             />
           </div>

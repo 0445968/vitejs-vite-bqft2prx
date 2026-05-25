@@ -16,6 +16,7 @@ import {
   Link2,
   Network,
   Paintbrush,
+  Palette,
   QrCode,
   Regex,
   ShieldCheck,
@@ -386,6 +387,7 @@ export const toolCategories: ToolCategory[] = [
         icon: Palette,
         component: ColorStudio,
         status: 'ready',
+        layout: 'immersive',
         keywords: ['color', 'palette', 'coolors', 'gradient', 'contrast', 'hex', 'css'],
       },
       {
