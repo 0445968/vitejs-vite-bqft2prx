@@ -18,10 +18,9 @@ import type {
 import {
   adjustHex,
   simulateColorBlindness,
-  getContrastGrade, // Assuming this utility calculates contrast or accessibility rankings
 } from '../utils/color';
 
-// Helper function to calculate standard contrast ratio (WCAG formula)
+// Simple luminance calculation to provide accurate relative contrast outputs
 function getContrastRatio(hex1: string, hex2: string): number {
   const getLuminance = (hex: string) => {
     const r = parseInt(hex.slice(1, 3), 16) / 255;
@@ -50,6 +49,7 @@ function AppMockup({
   const skeletonClass = isDark ? 'bg-slate-800' : 'bg-slate-200';
 
   const c0 = colors[0]?.hex ?? '#22c55e';
+  const c1 = colors[1]?.hex ?? '#ABFF4F';
   const c2 = colors[2]?.hex ?? '#06b6d4';
   const c3 = colors[3]?.hex ?? '#f59e0b';
   const c4 = colors[4]?.hex ?? '#1e293b';
@@ -66,9 +66,11 @@ function AppMockup({
             <div className="hidden w-12 shrink-0 flex-col gap-3 sm:flex">
               <div
                 className="h-8 w-full rounded-xl shadow-sm"
-                style={{ background: c3 }}
+                style={{ background: c1 }}
               />
-              <div className={`h-8 w-full rounded-xl opacity-40 ${skeletonClass}`} />
+              <div className={`h-8 w-full rounded-xl opacity-100 ${skeletonClass}`} 
+              style={{ background: c0 }}
+              />
               <div className={`h-8 w-full rounded-xl opacity-40 ${skeletonClass}`} />
             </div>
 
@@ -104,7 +106,7 @@ function AppMockup({
 
 function BrandPreviewContent({
   colors,
-  rawColors, // Unshuffled array to guarantee regular, sequential navigation
+  rawColors,
   isDark,
   onShuffle,
 }: {
@@ -121,7 +123,6 @@ function BrandPreviewContent({
   const c3 = colors[3]?.hex ?? '#f59e0b';
   const c4 = colors[4]?.hex ?? '#1e293b';
 
-  // Fallback to active color definitions safely
   const activeContrastColor = rawColors[contrastColorIndex]?.hex || c0;
 
   const handlePrevColor = () => {
@@ -134,7 +135,6 @@ function BrandPreviewContent({
     setContrastColorIndex((prev) => (prev === rawColors.length - 1 ? 0 : prev + 1));
   };
 
-  // Compute live accessibility ratios
   const whiteRatio = getContrastRatio(activeContrastColor, '#ffffff');
   const blackRatio = getContrastRatio(activeContrastColor, '#000000');
 
@@ -149,80 +149,54 @@ function BrandPreviewContent({
     <div className="flex min-h-0 flex-1 flex-col">
       <AppMockup colors={colors} isDark={isDark} />
 
-      <div className="space-y-6 px-4 py-4">
-        {/* Usage Section */}
+      <div className="space-y-4 px-4 py-2">
+        {/* Buttons Section */}
         <div>
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-1.5 flex items-center justify-between">
             <div
-              className="text-[11px] uppercase tracking-[0.22em]"
+              className="text-[10px] font-bold uppercase tracking-[0.22em]"
               style={{ color: isDark ? '#94a3b8' : '#64748b' }}
             >
-              Usage
+              Buttons
             </div>
             
             <button
               type="button"
               onClick={onShuffle}
-              className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold transition-colors bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
+              className="flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition-colors bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
               style={{ color: isDark ? '#f8fafc' : '#0f172a' }}
             >
-              <RefreshCw className="h-3 w-3" />
-              Shuffle Roles
+              <RefreshCw className="h-2.5 w-2.5" />
+              Shuffle
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div
-              className="min-w-0 rounded-2xl p-4"
+          {/* Clean alignment with outer container borders and individual component labels removed */}
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              className="w-full rounded-xl py-2.5 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90"
+              style={{ background: c0, color: '#fff' }}
+            >
+              Call to Action
+            </button>
+
+            <button
+              className="w-full rounded-xl py-2.5 text-xs font-semibold transition-colors hover:bg-black/5 dark:hover:bg-white/5"
               style={{
-                background: isDark ? 'rgba(255,255,255,0.045)' : '#f8fafc',
-                border: `1px solid ${c0}`,
+                border: `2px solid ${c2}`,
+                color: c2,
+                background: 'transparent',
               }}
             >
-              <div
-                className="mb-3 text-sm font-semibold"
-                style={{ color: isDark ? '#fff' : '#0f172a' }}
-              >
-                Primary Button
-              </div>
-
-              <button
-                className="w-full rounded-xl py-3 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90"
-                style={{ background: c0, color: '#fff' }}
-              >
-                Call to Action
-              </button>
-            </div>
-
-            <div
-              className="min-w-0 rounded-2xl border p-4"
-              style={{ borderColor: isDark ? '#475569' : '#cbd5e1' }}
-            >
-              <div
-                className="mb-3 text-sm font-semibold"
-                style={{ color: isDark ? '#fff' : '#0f172a' }}
-              >
-                Secondary
-              </div>
-
-              <button
-                className="w-full rounded-xl py-3 text-sm font-semibold transition-colors hover:bg-black/5 dark:hover:bg-white/5"
-                style={{
-                  border: `2px solid ${c2}`,
-                  color: c2,
-                  background: 'transparent',
-                }}
-              >
-                Outline Style
-              </button>
-            </div>
+              Outline Style
+            </button>
           </div>
         </div>
 
         {/* Patterns Section */}
         <div>
           <div
-            className="mb-2 text-[11px] uppercase tracking-[0.22em]"
+            className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.22em]"
             style={{ color: isDark ? '#94a3b8' : '#64748b' }}
           >
             Patterns
@@ -230,96 +204,91 @@ function BrandPreviewContent({
 
           <div className="grid grid-cols-2 gap-3">
             <div
-              className="relative h-24 overflow-hidden rounded-2xl"
+              className="relative h-16 overflow-hidden rounded-xl"
               style={{
                 background: `repeating-linear-gradient(
                   135deg,
-                  ${c0} 0 16px,
-                  ${c1} 16px 32px,
-                  ${c2} 32px 48px,
-                  ${c3} 48px 64px,
-                  ${c4} 64px 80px
+                  ${c0} 0 12px,
+                  ${c1} 12px 24px,
+                  ${c2} 24px 36px,
+                  ${c3} 36px 48px,
+                  ${c4} 48px 60px
                 )`,
               }}
             />
 
             <div
-              className="relative h-24 overflow-hidden rounded-2xl"
+              className="relative h-16 overflow-hidden rounded-xl"
               style={{ backgroundColor: c3 }}
             >
-              <div className="absolute left-7 top-4 h-5 w-5 rounded-full" style={{ background: c0 }} />
-              <div className="absolute left-8 top-10 h-3 w-10 rounded-full" style={{ background: c1 }} />
-              <div className="absolute left-16 bottom-4 h-5 w-5 rounded-full" style={{ background: c2 }} />
-              <div className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ background: c0 }} />
-              <div className="absolute right-14 top-1/2 h-7 w-7 -translate-y-1/2 rotate-45 rounded-md" style={{ background: c4 }} />
-              <div className="absolute right-7 top-4 h-5 w-5 rounded-full" style={{ background: c1 }} />
-              <div className="absolute right-8 bottom-5 h-4 w-4 rounded-full" style={{ background: c4 }} />
-              <div className="absolute right-10 bottom-8 h-3 w-10 rounded-full" style={{ background: c2 }} />
+              <div className="absolute left-4 top-2 h-3 w-3 rounded-full" style={{ background: c0 }} />
+              <div className="absolute left-5 top-7 h-2 w-6 rounded-full" style={{ background: c1 }} />
+              <div className="absolute left-10 bottom-2 h-3 w-3 rounded-full" style={{ background: c2 }} />
+              <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ background: c0 }} />
+              <div className="absolute right-10 top-1/2 h-4 w-4 -translate-y-1/2 rotate-45 rounded-sm" style={{ background: c4 }} />
+              <div className="absolute right-4 top-2 h-3 w-3 rounded-full" style={{ background: c1 }} />
+              <div className="absolute right-5 bottom-3 h-2.5 w-2.5 rounded-full" style={{ background: c4 }} />
+              <div className="absolute right-6 bottom-6 h-2 w-6 rounded-full" style={{ background: c2 }} />
             </div>
           </div>
         </div>
 
         {/* Contrast Checker Section */}
         <div>
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-1.5 flex items-center justify-between">
             <div
-              className="text-[11px] uppercase tracking-[0.22em]"
+              className="text-[10px] font-bold uppercase tracking-[0.22em]"
               style={{ color: isDark ? '#94a3b8' : '#64748b' }}
             >
               Contrast Checker
             </div>
 
-            {/* Pagination Navigation Controls */}
             <div className="flex items-center gap-1">
               <span 
-                className="mr-1.5 font-mono text-[11px] font-bold"
+                className="mr-1 font-mono text-[10px] font-bold"
                 style={{ color: isDark ? '#64748b' : '#94a3b8' }}
               >
-                Color {contrastColorIndex + 1}/{rawColors.length || 5}
+                {contrastColorIndex + 1}/{rawColors.length || 5}
               </span>
               <button
                 type="button"
                 onClick={handlePrevColor}
-                className="flex h-6 w-6 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
-                title="Previous color"
+                className="flex h-5 w-5 items-center justify-center rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
               >
-                <ChevronLeft className="h-3 w-3" />
+                <ChevronLeft className="h-2.5 w-2.5" />
               </button>
               <button
                 type="button"
                 onClick={handleNextColor}
-                className="flex h-6 w-6 items-center justify-center rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
-                title="Next color"
+                className="flex h-5 w-5 items-center justify-center rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
               >
-                <ChevronRight className="h-3 w-3" />
+                <ChevronRight className="h-2.5 w-2.5" />
               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {/* White Text Target Box */}
             <div
-              className="flex h-24 flex-col justify-between rounded-2xl p-3 shadow-inner transition-colors"
+              className="flex h-16 flex-col justify-between rounded-xl p-2.5 shadow-inner transition-colors"
               style={{ backgroundColor: activeContrastColor, color: '#ffffff' }}
             >
-              <span className="text-xs font-bold tracking-wide opacity-90">White Text</span>
+              <span className="text-[10px] font-bold tracking-wide opacity-90">White Text</span>
               <div className="flex items-baseline justify-between">
-                <span className="text-xl font-black tracking-tight">{whiteRatio.toFixed(1)}:1</span>
-                <span className="rounded bg-white/20 px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider backdrop-blur-sm">
+                <span className="text-base font-black tracking-tight">{whiteRatio.toFixed(1)}:1</span>
+                <span className="rounded bg-white/20 px-1 py-0.5 text-[9px] font-black uppercase tracking-wider backdrop-blur-sm">
                   {getGradeLabel(whiteRatio)}
                 </span>
               </div>
             </div>
 
-            {/* Black Text Target Box */}
             <div
-              className="flex h-24 flex-col justify-between rounded-2xl p-3 shadow-inner transition-colors"
+              className="flex h-16 flex-col justify-between rounded-xl p-2.5 shadow-inner transition-colors"
               style={{ backgroundColor: activeContrastColor, color: '#000000' }}
             >
-              <span className="text-xs font-bold tracking-wide opacity-80">Black Text</span>
+              <span className="text-[10px] font-bold tracking-wide opacity-80">Black Text</span>
               <div className="flex items-baseline justify-between">
-                <span className="text-xl font-black tracking-tight">{blackRatio.toFixed(1)}:1</span>
-                <span className="rounded bg-black/10 px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider backdrop-blur-sm">
+                <span className="text-base font-black tracking-tight">{blackRatio.toFixed(1)}:1</span>
+                <span className="rounded bg-black/10 px-1 py-0.5 text-[9px] font-black uppercase tracking-wider backdrop-blur-sm">
                   {getGradeLabel(blackRatio)}
                 </span>
               </div>
@@ -376,7 +345,7 @@ export function LivePreviewPanel({
   };
 
   const panelBg = previewIsDark
-    ? 'bg-[#0a0f1c] text-white'
+    ? 'bg-[#0F172A] text-white'
     : 'bg-white text-slate-900';
 
   const borderColor = previewIsDark
@@ -390,7 +359,7 @@ export function LivePreviewPanel({
     <aside
       className={`relative ml-auto flex h-full min-h-0 shrink-0 justify-end overflow-hidden border-l transition-[width] duration-300 ease-in-out ${panelBg} ${borderColor}`}
       style={{
-        width: isPreviewCollapsed ? 56 : 'min(420px, calc(100vw - 72px))',
+        width: isPreviewCollapsed ? 56 : 'min(460px, calc(100vw - 72px))',
         maxWidth: '100%',
       }}
     >
@@ -400,7 +369,6 @@ export function LivePreviewPanel({
             type="button"
             onClick={() => setIsPreviewCollapsed(false)}
             className="flex h-9 w-9 items-center justify-center rounded-xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-800"
-            title="Expand preview"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -409,7 +377,7 @@ export function LivePreviewPanel({
         <div className={`flex h-full min-h-0 w-full flex-col overflow-hidden ${panelBg}`}>
           
           {/* Header Panel */}
-          <div className="flex shrink-0 items-center justify-between px-4 py-4">
+          <div className="flex shrink-0 items-center justify-between px-4 py-3">
             <div className="leading-none select-none">
               <span className="text-sm font-bold tracking-tight" style={{ color: brandC0 }}>
                 Quick
@@ -427,7 +395,6 @@ export function LivePreviewPanel({
                   className={`flex h-8 w-8 items-center justify-center rounded-xl transition-all ${
                     !previewIsDark ? 'bg-white shadow-sm' : 'text-slate-400'
                   }`}
-                  title="Light preview"
                 >
                   <Sun className="h-4 w-4" />
                 </button>
@@ -438,7 +405,6 @@ export function LivePreviewPanel({
                   className={`flex h-8 w-8 items-center justify-center rounded-xl transition-all ${
                     previewIsDark ? 'bg-slate-700 shadow-sm' : 'text-slate-400'
                   }`}
-                  title="Dark preview"
                 >
                   <Moon className="h-4 w-4" />
                 </button>
@@ -448,15 +414,14 @@ export function LivePreviewPanel({
                 type="button"
                 onClick={() => setIsPreviewCollapsed(true)}
                 className="flex h-9 w-9 items-center justify-center rounded-xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-800"
-                title="Collapse preview"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
           </div>
 
-          {/* Main Layout Area */}
-          <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
+          {/* Main Layout Area - Completely scroll-free on standard panels */}
+          <div className="min-h-0 flex-1 overflow-hidden">
             <BrandPreviewContent 
               colors={shuffledColors}
               rawColors={visibleColors} 
@@ -465,12 +430,12 @@ export function LivePreviewPanel({
             />
           </div>
 
-          {/* Footer with unique system border */}
+          {/* Footer Divider link */}
           <div
-            className="flex shrink-0 items-center justify-between gap-3 border-t px-4 py-3 text-[11px]"
+            className="flex shrink-0 items-center justify-between gap-3 border-t px-4 py-2.5 text-[11px]"
             style={{
               borderColor: previewIsDark ? '#233148' : '#e2e8f0',
-              background: previewIsDark ? '#0a0f1c' : '#fff',
+              background: previewIsDark ? '#0F172A' : '#fff',
             }}
           >
             <span className="truncate opacity-80">Quick Utility by Crafterkite</span>
