@@ -36,9 +36,20 @@ import {
   rgbToHex,
 } from './utils/color';
 
+function getInitialPreviewTheme(): PreviewTheme {
+  if (typeof window === 'undefined') return 'light';
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+}
+
 export default function ColorStudio() {
-  const [activeToolId, setActiveToolId] = useState<StudioToolId>('visualize');
+  const [activeToolId, setActiveToolId] = useState<StudioToolId>('palette');
   const [colors, setColors] = useState<PaletteColor[]>(initialPalette);
+  const [history, setHistory] = useState<PaletteColor[][]>([initialPalette]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
   const [harmonyMode, setHarmonyMode] = useState<HarmonyMode>('random');
   const [baseColor, setBaseColor] = useState('#527AC9');
   const [foreground, setForeground] = useState('#111827');
@@ -46,44 +57,142 @@ export default function ColorStudio() {
   const [gradientType, setGradientType] = useState<GradientType>('linear');
   const [gradientAngle, setGradientAngle] = useState(135);
   const [exportFormat, setExportFormat] = useState<ExportFormat>('css');
-  const [previewTheme, setPreviewTheme] = useState<PreviewTheme>('light');
+  const [previewTheme, setPreviewTheme] = useState<PreviewTheme>(() => getInitialPreviewTheme());
   const [blindnessMode, setBlindnessMode] = useState<ColorBlindnessMode>('normal');
-  const [adjustment, setAdjustment] = useState<AdjustmentState>({ hue: 0, saturation: 0, brightness: 0, temperature: 0 });
+  const [adjustment, setAdjustment] = useState<AdjustmentState>({
+    hue: 0,
+    saturation: 0,
+    brightness: 0,
+    temperature: 0,
+  });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [extractedColors, setExtractedColors] = useState<string[]>([]);
   const [copiedColorId, setCopiedColorId] = useState<string | null>(null);
   const [copiedGradient, setCopiedGradient] = useState(false);
   const [copiedExport, setCopiedExport] = useState(false);
 
-  const activeTool = studioTools.find((tool) => tool.id === activeToolId) ?? studioTools[0];
-  const gradient = useMemo(() => buildGradientCss(colors.map((color) => color.hex), gradientType, gradientAngle), [colors, gradientType, gradientAngle]);
-  const ratio = useMemo(() => contrastRatio(foreground, background), [foreground, background]);
-  const exportText = useMemo(() => buildExportText(colors, exportFormat), [colors, exportFormat]);
+  const activeTool =
+    studioTools.find((tool) => tool.id === activeToolId) ?? studioTools[0];
+
+  const gradient = useMemo(
+    () =>
+      buildGradientCss(
+        colors.map((color) => color.hex),
+        gradientType,
+        gradientAngle
+      ),
+    [colors, gradientType, gradientAngle]
+  );
+
+  const ratio = useMemo(
+    () => contrastRatio(foreground, background),
+    [foreground, background]
+  );
+
+  const exportText = useMemo(
+    () => buildExportText(colors, exportFormat),
+    [colors, exportFormat]
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const syncPreviewTheme = (event: MediaQueryListEvent) => {
+      setPreviewTheme(event.matches ? 'dark' : 'light');
+    };
+
+    media.addEventListener('change', syncPreviewTheme);
+    return () => media.removeEventListener('change', syncPreviewTheme);
+  }, []);
+
+  const commitColors = (nextColors: PaletteColor[]) => {
+    setColors(nextColors);
+    setHistory((current) => {
+      const trimmed = current.slice(0, historyIndex + 1);
+      return [...trimmed, nextColors];
+    });
+    setHistoryIndex((current) => current + 1);
+  };
 
   const generatePalette = () => {
     const generated = createPaletteFromMode(harmonyMode, baseColor);
-    setColors((current) => current.map((color, index) => color.locked ? color : { ...color, hex: generated[index] ?? randomHex() }));
+
+    commitColors(
+      colors.map((color, index) =>
+        color.locked
+          ? color
+          : {
+              ...color,
+              hex: generated[index] ?? randomHex(),
+            }
+      )
+    );
+  };
+
+  const undoPalette = () => {
+    if (historyIndex <= 0) return;
+
+    const nextIndex = historyIndex - 1;
+    setHistoryIndex(nextIndex);
+    setColors(history[nextIndex]);
+  };
+
+  const redoPalette = () => {
+    if (historyIndex >= history.length - 1) return;
+
+    const nextIndex = historyIndex + 1;
+    setHistoryIndex(nextIndex);
+    setColors(history[nextIndex]);
   };
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
-      const isTyping = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.tagName === 'SELECT' || target?.isContentEditable;
+      const isTyping =
+        target?.tagName === 'INPUT' ||
+        target?.tagName === 'TEXTAREA' ||
+        target?.tagName === 'SELECT' ||
+        target?.isContentEditable;
+
       if (event.code === 'Space' && !isTyping) {
         event.preventDefault();
         generatePalette();
       }
+
+      if ((event.metaKey || event.ctrlKey) && !isTyping) {
+        const key = event.key.toLowerCase();
+
+        if (key === 'z' && event.shiftKey) {
+          event.preventDefault();
+          redoPalette();
+        } else if (key === 'z') {
+          event.preventDefault();
+          undoPalette();
+        } else if (key === 'y') {
+          event.preventDefault();
+          redoPalette();
+        }
+      }
     };
+
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [harmonyMode, baseColor, colors]);
+  }, [harmonyMode, baseColor, colors, history, historyIndex]);
 
   const updateColor = (id: string, value: string) => {
-    setColors((current) => current.map((color) => color.id === id ? { ...color, hex: normalizeHex(value) } : color));
+    commitColors(
+      colors.map((color) =>
+        color.id === id ? { ...color, hex: normalizeHex(value) } : color
+      )
+    );
   };
 
   const toggleLock = (id: string) => {
-    setColors((current) => current.map((color) => color.id === id ? { ...color, locked: !color.locked } : color));
+    setColors((current) =>
+      current.map((color) =>
+        color.id === id ? { ...color, locked: !color.locked } : color
+      )
+    );
   };
 
   const copyColor = async (color: PaletteColor) => {
@@ -117,46 +226,82 @@ export default function ColorStudio() {
   };
 
   const downloadExport = () => {
-    downloadTextFile(exportText, `quickutility-color-palette-${Date.now()}.${exportFormat === 'json' ? 'json' : 'txt'}`);
+    downloadTextFile(
+      exportText,
+      `quickutility-color-palette-${Date.now()}.${
+        exportFormat === 'json' ? 'json' : 'txt'
+      }`
+    );
   };
 
   const applyPalette = (hexes: string[]) => {
-    setColors(hexes.slice(0, 5).map((hex, index) => ({ id: colors[index]?.id ?? makeId(), hex: normalizeHex(hex), locked: colors[index]?.locked ?? false })));
+    commitColors(
+      hexes.slice(0, 5).map((hex, index) => ({
+        id: colors[index]?.id ?? makeId(),
+        hex: normalizeHex(hex),
+        locked: colors[index]?.locked ?? false,
+      }))
+    );
   };
 
   const applyAdjustment = () => {
-    setColors((current) => current.map((color) => ({ ...color, hex: adjustHex(color.hex, adjustment) })));
+    commitColors(
+      colors.map((color) => ({
+        ...color,
+        hex: adjustHex(color.hex, adjustment),
+      }))
+    );
+
     setAdjustment({ hue: 0, saturation: 0, brightness: 0, temperature: 0 });
   };
 
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
     const reader = new FileReader();
+
     reader.onload = () => {
       const result = String(reader.result ?? '');
       setImagePreview(result);
+
       const image = new Image();
+
       image.onload = () => {
         const canvas = document.createElement('canvas');
         const size = 80;
+
         canvas.width = size;
         canvas.height = size;
+
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
+
         ctx.drawImage(image, 0, 0, size, size);
+
         const data = ctx.getImageData(0, 0, size, size).data;
         const samples: string[] = [];
+
         for (let i = 0; i < 5; i += 1) {
           const x = Math.floor(((i + 0.7) / 5) * size);
-          const y = Math.floor(((i % 2 ? 0.68 : 0.34)) * size);
+          const y = Math.floor((i % 2 ? 0.68 : 0.34) * size);
           const idx = (y * size + x) * 4;
-          samples.push(rgbToHex({ r: data[idx], g: data[idx + 1], b: data[idx + 2] }));
+
+          samples.push(
+            rgbToHex({
+              r: data[idx],
+              g: data[idx + 1],
+              b: data[idx + 2],
+            })
+          );
         }
+
         setExtractedColors(samples);
       };
+
       image.src = result;
     };
+
     reader.readAsDataURL(file);
   };
 
@@ -164,25 +309,117 @@ export default function ColorStudio() {
     <section className="min-h-[calc(100dvh-4rem)] bg-slate-50 dark:bg-slate-950">
       <div className="min-h-[calc(100dvh-4rem)] xl:ml-[76px] xl:grid xl:grid-cols-[minmax(0,1fr)_420px] 2xl:grid-cols-[minmax(0,1fr)_460px]">
         <div className="min-w-0">
-          <StudioToolbar tools={studioTools} activeToolId={activeToolId} onSelectTool={setActiveToolId} />
+          <StudioToolbar
+            tools={studioTools}
+            activeToolId={activeToolId}
+            canUndo={historyIndex > 0}
+            canRedo={historyIndex < history.length - 1}
+            onSelectTool={setActiveToolId}
+            onUndo={undoPalette}
+            onRedo={redoPalette}
+            onExport={downloadExport}
+          />
+
           <StudioHeader tool={activeTool} onGeneratePalette={generatePalette} />
 
           <main className="min-w-0 px-4 py-5 sm:px-6 lg:px-8">
-            {activeToolId === 'visualize' && <VisualizeColorsTool colors={colors} />}
-            {activeToolId === 'palette' && <PaletteGeneratorTool colors={colors} copiedColorId={copiedColorId} harmonyMode={harmonyMode} baseColor={baseColor} onHarmonyModeChange={setHarmonyMode} onBaseColorChange={setBaseColor} onGeneratePalette={generatePalette} onUpdateColor={updateColor} onCopyColor={copyColor} onToggleLock={toggleLock} />}
-            {activeToolId === 'blindness' && <ColorBlindnessTool colors={colors} mode={blindnessMode} onModeChange={setBlindnessMode} />}
-            {activeToolId === 'quick-view' && <QuickViewTool colors={colors} onCopyColor={copyColor} />}
-            {activeToolId === 'image-extract' && <ImageExtractTool imagePreview={imagePreview} extractedColors={extractedColors} onImageUpload={handleImageUpload} onUseExtracted={() => applyPalette(extractedColors)} />}
-            {activeToolId === 'variations' && <VariationsTool colors={colors} onApplyPalette={applyPalette} />}
-            {activeToolId === 'palette-contrast' && <PaletteContrastTool colors={colors} />}
-            {activeToolId === 'adjust' && <AdjustPaletteTool colors={colors} adjustment={adjustment} onAdjustmentChange={setAdjustment} onApply={applyAdjustment} />}
-            {activeToolId === 'gradient' && <GradientPreviewTool colors={colors} gradient={gradient} gradientType={gradientType} gradientAngle={gradientAngle} copied={copiedGradient} onGradientTypeChange={setGradientType} onGradientAngleChange={setGradientAngle} onCopyGradient={copyGradient} />}
-            {activeToolId === 'export' && <ExportTokensTool colors={colors} exportFormat={exportFormat} exportText={exportText} copied={copiedExport} onExportFormatChange={setExportFormat} onCopyExport={copyExport} onDownloadExport={downloadExport} />}
+            {activeToolId === 'visualize' && (
+              <VisualizeColorsTool colors={colors} />
+            )}
+
+            {activeToolId === 'palette' && (
+              <PaletteGeneratorTool
+                colors={colors}
+                copiedColorId={copiedColorId}
+                harmonyMode={harmonyMode}
+                baseColor={baseColor}
+                onHarmonyModeChange={setHarmonyMode}
+                onBaseColorChange={setBaseColor}
+                onGeneratePalette={generatePalette}
+                onUpdateColor={updateColor}
+                onCopyColor={copyColor}
+                onToggleLock={toggleLock}
+              />
+            )}
+
+            {activeToolId === 'blindness' && (
+              <ColorBlindnessTool
+                colors={colors}
+                mode={blindnessMode}
+                onModeChange={setBlindnessMode}
+              />
+            )}
+
+            {activeToolId === 'quick-view' && (
+              <QuickViewTool colors={colors} onCopyColor={copyColor} />
+            )}
+
+            {activeToolId === 'image-extract' && (
+              <ImageExtractTool
+                imagePreview={imagePreview}
+                extractedColors={extractedColors}
+                onImageUpload={handleImageUpload}
+                onUseExtracted={() => applyPalette(extractedColors)}
+              />
+            )}
+
+            {activeToolId === 'variations' && (
+              <VariationsTool colors={colors} onApplyPalette={applyPalette} />
+            )}
+
+            {activeToolId === 'palette-contrast' && (
+              <PaletteContrastTool colors={colors} />
+            )}
+
+            {activeToolId === 'adjust' && (
+              <AdjustPaletteTool
+                colors={colors}
+                adjustment={adjustment}
+                onAdjustmentChange={setAdjustment}
+                onApply={applyAdjustment}
+              />
+            )}
+
+            {activeToolId === 'gradient' && (
+              <GradientPreviewTool
+                colors={colors}
+                gradient={gradient}
+                gradientType={gradientType}
+                gradientAngle={gradientAngle}
+                copied={copiedGradient}
+                onGradientTypeChange={setGradientType}
+                onGradientAngleChange={setGradientAngle}
+                onCopyGradient={copyGradient}
+              />
+            )}
+
+            {activeToolId === 'export' && (
+              <ExportTokensTool
+                colors={colors}
+                exportFormat={exportFormat}
+                exportText={exportText}
+                copied={copiedExport}
+                onExportFormatChange={setExportFormat}
+                onCopyExport={copyExport}
+                onDownloadExport={downloadExport}
+              />
+            )}
           </main>
         </div>
 
         <aside className="hidden xl:sticky xl:top-16 xl:block xl:h-[calc(100dvh-4rem)] xl:self-start">
-          <LivePreviewPanel activeToolId={activeToolId} colors={colors} gradient={gradient} foreground={foreground} background={background} contrastRatio={ratio} previewTheme={previewTheme} blindnessMode={blindnessMode} adjustment={adjustment} onPreviewThemeChange={setPreviewTheme} />
+          <LivePreviewPanel
+            activeToolId={activeToolId}
+            colors={colors}
+            gradient={gradient}
+            foreground={foreground}
+            background={background}
+            contrastRatio={ratio}
+            previewTheme={previewTheme}
+            blindnessMode={blindnessMode}
+            adjustment={adjustment}
+            onPreviewThemeChange={setPreviewTheme}
+          />
         </aside>
       </div>
     </section>

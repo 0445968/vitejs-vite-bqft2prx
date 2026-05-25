@@ -7,8 +7,6 @@ export type PaletteColor = {
 };
 
 export type StudioToolId =
-  | 'visualize'
-  | 'palette'
   | 'blindness'
   | 'quick-view'
   | 'image-extract'
@@ -16,6 +14,8 @@ export type StudioToolId =
   | 'palette-contrast'
   | 'adjust'
   | 'gradient'
+  | 'palette'
+  | 'visualize'
   | 'export';
 
 export type HarmonyMode = 'random' | 'analogous' | 'monochrome' | 'triadic' | 'complementary';

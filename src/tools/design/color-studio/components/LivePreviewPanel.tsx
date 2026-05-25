@@ -79,9 +79,9 @@ export function LivePreviewPanel({
           <h3 className="mt-2 text-base font-black">{activeToolId === 'visualize' ? 'Visualize colors' : 'Output preview'}</h3>
         </div>
         <div className={`flex rounded-2xl p-1 ${softClass}`}>
+        <button type="button" onClick={() => onPreviewThemeChange('dark')} className={`flex h-9 w-9 items-center justify-center rounded-xl ${previewIsDark ? 'bg-slate-800 text-blue-400 shadow-sm' : mutedClass}`} aria-label="Dark preview"><Moon className="h-4 w-4" /></button>
           <button type="button" onClick={() => onPreviewThemeChange('light')} className={`flex h-9 w-9 items-center justify-center rounded-xl ${!previewIsDark ? 'bg-white text-blue-600 shadow-sm' : mutedClass}`} aria-label="Light preview"><Sun className="h-4 w-4" /></button>
-          <button type="button" onClick={() => onPreviewThemeChange('dark')} className={`flex h-9 w-9 items-center justify-center rounded-xl ${previewIsDark ? 'bg-slate-800 text-blue-400 shadow-sm' : mutedClass}`} aria-label="Dark preview"><Moon className="h-4 w-4" /></button>
-        </div>
+            </div>
       </div>
 
       <div className="grid flex-1 min-h-0 grid-rows-[auto_auto_auto_1fr] gap-3 overflow-hidden p-4">
