@@ -46,6 +46,7 @@ function getInitialPreviewTheme(): PreviewTheme {
 
 export default function ColorStudio() {
   const [activeToolId, setActiveToolId] = useState<StudioToolId>('palette');
+  const [previewToolId, setPreviewToolId] = useState<StudioToolId>('palette');
   const [colors, setColors] = useState<PaletteColor[]>(initialPalette);
   const [history, setHistory] = useState<PaletteColor[][]>([initialPalette]);
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -57,8 +58,11 @@ export default function ColorStudio() {
   const [gradientType, setGradientType] = useState<GradientType>('linear');
   const [gradientAngle, setGradientAngle] = useState(135);
   const [exportFormat, setExportFormat] = useState<ExportFormat>('css');
-  const [previewTheme, setPreviewTheme] = useState<PreviewTheme>(() => getInitialPreviewTheme());
-  const [blindnessMode, setBlindnessMode] = useState<ColorBlindnessMode>('normal');
+  const [previewTheme, setPreviewTheme] = useState<PreviewTheme>(() =>
+    getInitialPreviewTheme()
+  );
+  const [blindnessMode, setBlindnessMode] =
+    useState<ColorBlindnessMode>('normal');
   const [adjustment, setAdjustment] = useState<AdjustmentState>({
     hue: 0,
     saturation: 0,
@@ -114,19 +118,38 @@ export default function ColorStudio() {
     setHistoryIndex((current) => current + 1);
   };
 
-  const generatePalette = () => {
-    const generated = createPaletteFromMode(harmonyMode, baseColor);
+  const buildGeneratedPalette = (mode = harmonyMode, base = baseColor) => {
+    const generated = createPaletteFromMode(mode, base);
 
-    commitColors(
-      colors.map((color, index) =>
-        color.locked
-          ? color
-          : {
-              ...color,
-              hex: generated[index] ?? randomHex(),
-            }
-      )
+    return colors.map((color, index) =>
+      color.locked
+        ? color
+        : {
+            ...color,
+            hex: generated[index] ?? randomHex(),
+          }
     );
+  };
+
+  const generatePalette = () => {
+    commitColors(buildGeneratedPalette());
+  };
+
+  const handleHarmonyModeChange = (mode: HarmonyMode) => {
+    setHarmonyMode(mode);
+    commitColors(buildGeneratedPalette(mode, baseColor));
+  };
+
+  const handleBaseColorChange = (hex: string) => {
+    setBaseColor(hex);
+  };
+
+  const selectTool = (toolId: StudioToolId) => {
+    setPreviewToolId(toolId);
+
+    if (toolId === 'visualize') return;
+
+    setActiveToolId(toolId);
   };
 
   const undoPalette = () => {
@@ -307,120 +330,124 @@ export default function ColorStudio() {
 
   return (
     <section className="min-h-[calc(100dvh-4rem)] bg-slate-50 dark:bg-slate-950">
-      <div className="min-h-[calc(100dvh-4rem)] xl:ml-[76px] xl:grid xl:grid-cols-[minmax(0,1fr)_420px] 2xl:grid-cols-[minmax(0,1fr)_460px]">
-        <div className="min-w-0">
-          <StudioToolbar
-            tools={studioTools}
-            activeToolId={activeToolId}
-            canUndo={historyIndex > 0}
-            canRedo={historyIndex < history.length - 1}
-            onSelectTool={setActiveToolId}
-            onUndo={undoPalette}
-            onRedo={redoPalette}
-            onExport={downloadExport}
-          />
+      <div className="xl:ml-[76px]">
+        <StudioToolbar
+          tools={studioTools}
+          activeToolId={previewToolId}
+          canUndo={historyIndex > 0}
+          canRedo={historyIndex < history.length - 1}
+          onSelectTool={selectTool}
+          onUndo={undoPalette}
+          onRedo={redoPalette}
+          onExport={downloadExport}
+        />
 
-          <StudioHeader tool={activeTool} onGeneratePalette={generatePalette} />
+        <div className="min-h-[calc(100dvh-7.5rem)] xl:grid xl:grid-cols-[minmax(0,1fr)_420px] 2xl:grid-cols-[minmax(0,1fr)_460px]">
+          <div className="min-w-0">
+            <StudioHeader
+              tool={activeTool}
+              harmonyMode={harmonyMode}
+              baseColor={baseColor}
+              onHarmonyModeChange={handleHarmonyModeChange}
+              onBaseColorChange={handleBaseColorChange}
+              onGeneratePalette={generatePalette}
+            />
 
-          <main className="min-w-0 px-4 py-5 sm:px-6 lg:px-8">
-            {activeToolId === 'visualize' && (
-              <VisualizeColorsTool colors={colors} />
-            )}
+            <main className="min-w-0 px-4 py-5 sm:px-6 lg:px-8">
+              {activeToolId === 'visualize' && (
+                <VisualizeColorsTool colors={colors} />
+              )}
 
-            {activeToolId === 'palette' && (
-              <PaletteGeneratorTool
-                colors={colors}
-                copiedColorId={copiedColorId}
-                harmonyMode={harmonyMode}
-                baseColor={baseColor}
-                onHarmonyModeChange={setHarmonyMode}
-                onBaseColorChange={setBaseColor}
-                onGeneratePalette={generatePalette}
-                onUpdateColor={updateColor}
-                onCopyColor={copyColor}
-                onToggleLock={toggleLock}
-              />
-            )}
+              {activeToolId === 'palette' && (
+                <PaletteGeneratorTool
+                  colors={colors}
+                  copiedColorId={copiedColorId}
+                  onUpdateColor={updateColor}
+                  onCopyColor={copyColor}
+                  onToggleLock={toggleLock}
+                />
+              )}
 
-            {activeToolId === 'blindness' && (
-              <ColorBlindnessTool
-                colors={colors}
-                mode={blindnessMode}
-                onModeChange={setBlindnessMode}
-              />
-            )}
+              {activeToolId === 'blindness' && (
+                <ColorBlindnessTool
+                  colors={colors}
+                  mode={blindnessMode}
+                  onModeChange={setBlindnessMode}
+                />
+              )}
 
-            {activeToolId === 'quick-view' && (
-              <QuickViewTool colors={colors} onCopyColor={copyColor} />
-            )}
+              {activeToolId === 'quick-view' && (
+                <QuickViewTool colors={colors} onCopyColor={copyColor} />
+              )}
 
-            {activeToolId === 'image-extract' && (
-              <ImageExtractTool
-                imagePreview={imagePreview}
-                extractedColors={extractedColors}
-                onImageUpload={handleImageUpload}
-                onUseExtracted={() => applyPalette(extractedColors)}
-              />
-            )}
+              {activeToolId === 'image-extract' && (
+                <ImageExtractTool
+                  imagePreview={imagePreview}
+                  extractedColors={extractedColors}
+                  onImageUpload={handleImageUpload}
+                  onUseExtracted={() => applyPalette(extractedColors)}
+                />
+              )}
 
-            {activeToolId === 'variations' && (
-              <VariationsTool colors={colors} onApplyPalette={applyPalette} />
-            )}
+              {activeToolId === 'variations' && (
+                <VariationsTool colors={colors} onApplyPalette={applyPalette} />
+              )}
 
-            {activeToolId === 'palette-contrast' && (
-              <PaletteContrastTool colors={colors} />
-            )}
+              {activeToolId === 'palette-contrast' && (
+                <PaletteContrastTool colors={colors} />
+              )}
 
-            {activeToolId === 'adjust' && (
-              <AdjustPaletteTool
-                colors={colors}
-                adjustment={adjustment}
-                onAdjustmentChange={setAdjustment}
-                onApply={applyAdjustment}
-              />
-            )}
+              {activeToolId === 'adjust' && (
+                <AdjustPaletteTool
+                  colors={colors}
+                  adjustment={adjustment}
+                  onAdjustmentChange={setAdjustment}
+                  onApply={applyAdjustment}
+                />
+              )}
 
-            {activeToolId === 'gradient' && (
-              <GradientPreviewTool
-                colors={colors}
-                gradient={gradient}
-                gradientType={gradientType}
-                gradientAngle={gradientAngle}
-                copied={copiedGradient}
-                onGradientTypeChange={setGradientType}
-                onGradientAngleChange={setGradientAngle}
-                onCopyGradient={copyGradient}
-              />
-            )}
+              {activeToolId === 'gradient' && (
+                <GradientPreviewTool
+                  colors={colors}
+                  gradient={gradient}
+                  gradientType={gradientType}
+                  gradientAngle={gradientAngle}
+                  copied={copiedGradient}
+                  onGradientTypeChange={setGradientType}
+                  onGradientAngleChange={setGradientAngle}
+                  onCopyGradient={copyGradient}
+                />
+              )}
 
-            {activeToolId === 'export' && (
-              <ExportTokensTool
-                colors={colors}
-                exportFormat={exportFormat}
-                exportText={exportText}
-                copied={copiedExport}
-                onExportFormatChange={setExportFormat}
-                onCopyExport={copyExport}
-                onDownloadExport={downloadExport}
-              />
-            )}
-          </main>
+              {activeToolId === 'export' && (
+                <ExportTokensTool
+                  colors={colors}
+                  exportFormat={exportFormat}
+                  exportText={exportText}
+                  copied={copiedExport}
+                  onExportFormatChange={setExportFormat}
+                  onCopyExport={copyExport}
+                  onDownloadExport={downloadExport}
+                />
+              )}
+            </main>
+          </div>
+
+          <aside className="hidden xl:sticky xl:top-[7.5rem] xl:block xl:h-[calc(100dvh-7.5rem)] xl:self-start">
+            <LivePreviewPanel
+              activeToolId={previewToolId}
+              colors={colors}
+              gradient={gradient}
+              foreground={foreground}
+              background={background}
+              contrastRatio={ratio}
+              previewTheme={previewTheme}
+              blindnessMode={blindnessMode}
+              adjustment={adjustment}
+              onPreviewThemeChange={setPreviewTheme}
+            />
+          </aside>
         </div>
-
-        <aside className="hidden xl:sticky xl:top-16 xl:block xl:h-[calc(100dvh-4rem)] xl:self-start">
-          <LivePreviewPanel
-            activeToolId={activeToolId}
-            colors={colors}
-            gradient={gradient}
-            foreground={foreground}
-            background={background}
-            contrastRatio={ratio}
-            previewTheme={previewTheme}
-            blindnessMode={blindnessMode}
-            adjustment={adjustment}
-            onPreviewThemeChange={setPreviewTheme}
-          />
-        </aside>
       </div>
     </section>
   );
