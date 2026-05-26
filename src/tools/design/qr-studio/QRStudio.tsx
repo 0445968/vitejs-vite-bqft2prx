@@ -25,6 +25,7 @@ import type {
   QRRenderState,
 } from './types';
 import { PhonePreview } from './components/PhonePreview';
+import { QRStudioToolbar } from './components/QRStudioToolbar';
 import { ContentStep } from './steps/ContentStep';
 import { DesignStep } from './steps/DesignStep';
 import { LogoStep } from './steps/LogoStep';
@@ -201,34 +202,47 @@ export default function QRStudio() {
   };
 
   return (
-    <section className="bg-[color:var(--qu-surface)]">
-      <div className="grid min-h-[calc(100dvh-4.5rem)] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_460px]">
-        {/* Left editor: regular page scroll, no internal scrollbar */}
-<div className="min-w-0 border-r border-transparent lg:border-[color:var(--qu-border)]">
-  <div className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <div className="w-full max-w-4xl xl:ml-[calc((100vw-1280px)/2)]">
+    <section className="w-full min-h-[calc(100dvh-4.5rem)] bg-[color:var(--qu-surface)]">
+      <QRStudioToolbar
+        copied={copied}
+        currentType={type}
+        destination={getToolbarDestination(type, data)}
+        dynamicQr={dynamicQr}
+        dynamicId={dynamicId}
+        onCopy={copyToClipboard}
+        onDownload={download}
+      />
+  
+      <div className="grid w-full min-h-[calc(100dvh-8rem)] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_460px]">
+        {/* Left editor: page scroll only, no internal scrollbar */}
+        <main className="min-w-0 border-r border-transparent lg:border-[color:var(--qu-border)]">
+          <div className="w-full px-6 py-6 sm:px-8 lg:px-8 lg:py-8">
+            <div className="w-full">
               <div className="mb-6 flex items-start gap-4">
                 <div className="mt-1 hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[color:var(--qu-accent-soft)] text-[color:var(--qu-accent-strong)] sm:flex">
                   <QrCode className="h-5 w-5" />
                 </div>
-
+  
                 <div>
                   <div className="mb-2 flex flex-wrap items-center gap-2">
                     <span className="hub-badge">Local canvas</span>
                     <span className="hub-badge">Phone preview</span>
+                    {dynamicQr && (
+                      <span className="hub-badge">Dynamic ID {dynamicId}</span>
+                    )}
                   </div>
-
+  
                   <h2 className="text-3xl font-black tracking-tight text-[color:var(--qu-text)]">
                     QR Code Generator
                   </h2>
-
+  
                   <p className="mt-2 max-w-2xl text-sm leading-6 hub-muted">
                     Build a branded QR code with content types, colors, stickers,
                     logos, and a live mobile preview.
                   </p>
                 </div>
               </div>
-
+  
               <div className="space-y-4 pb-10">
                 <ContentStep
                   open={openStep === 'content'}
@@ -245,7 +259,7 @@ export default function QRStudio() {
                   setDynamicQr={setDynamicQr}
                   dynamicId={dynamicId}
                 />
-
+  
                 <DesignStep
                   open={openStep === 'design'}
                   onToggle={() =>
@@ -290,7 +304,7 @@ export default function QRStudio() {
                   frameTextColor={frameTextColor}
                   setFrameTextColor={setFrameTextColor}
                 />
-
+  
                 <LogoStep
                   open={openStep === 'logo'}
                   onToggle={() =>
@@ -307,10 +321,10 @@ export default function QRStudio() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right preview: sticky while normal page scrolls */}
-        <aside className="border-t border-[color:var(--qu-border)] bg-[color:var(--qu-surface-soft)] p-4 sm:p-6 lg:sticky lg:top-[4.5rem] lg:h-[calc(100dvh-4.5rem)] lg:self-start lg:overflow-hidden lg:border-t-0">
+        </main>
+  
+        {/* Right preview: sticky, not collapsible */}
+        <aside className="border-t border-[color:var(--qu-border)] bg-[color:var(--qu-surface-soft)] p-4 sm:p-6 lg:sticky lg:top-[8rem] lg:h-[calc(100dvh-8rem)] lg:self-start lg:overflow-hidden lg:border-t-0">
           <PhonePreview
             mode={previewMode}
             onModeChange={setPreviewMode}
@@ -334,4 +348,38 @@ export default function QRStudio() {
       </div>
     </section>
   );
+
+  function getToolbarDestination(type: ContentType, data: QRData) {
+    switch (type) {
+      case 'link':
+        return data.link || '';
+  
+      case 'text':
+        return data.text || '';
+  
+      case 'email':
+        return data.email || '';
+  
+      case 'call':
+        return data.phone || '';
+  
+      case 'sms':
+        return data.smsPhone || data.phone || '';
+  
+      case 'wifi':
+        return data.wifiSsid || '';
+  
+      default:
+        return (
+          data.link ||
+          data.socialUrl ||
+          data.text ||
+          data.email ||
+          data.phone ||
+          data.evTitle ||
+          data.vcFirst ||
+          ''
+        );
+    }
+  }
 }
