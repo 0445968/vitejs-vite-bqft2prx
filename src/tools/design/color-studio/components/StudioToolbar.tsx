@@ -60,7 +60,7 @@ export function StudioToolbar({
                   onClick={() => onSelectTool(tool.id)}
                   className={
                     active
-                      ? 'flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                      ? 'flex h-10 w-10 items-center justify-center rounded-xl bg-blue-950 text-white shadow-lg shadow-blue-950/20'
                       : 'flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white'
                   }
                   aria-label={tool.name}
@@ -111,7 +111,7 @@ export function StudioToolbar({
             }}
             className={
               generatorActive
-                ? 'inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-600 px-3 text-sm font-black text-white shadow-lg shadow-blue-600/20'
+                ? 'inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-950 px-3 text-sm font-black text-white shadow-lg shadow-blue-950/20'
                 : 'inline-flex h-10 items-center justify-center gap-2 rounded-xl px-3 text-sm font-black text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white'
             }
             aria-label="Generate palette"
@@ -127,7 +127,7 @@ export function StudioToolbar({
             onClick={() => onSelectTool('export')}
             className={
               exportActive
-                ? 'flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                ? 'flex h-10 w-10 items-center justify-center rounded-xl bg-blue-950 text-white shadow-lg shadow-blue-950/20'
                 : 'flex h-10 w-10 items-center justify-center rounded-xl text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white'
             }
             aria-label="Share palette"

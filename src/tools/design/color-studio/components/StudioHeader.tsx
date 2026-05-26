@@ -37,7 +37,7 @@ export function StudioHeader({
             </div>
 
             <h2 className="truncate text-2xl font-black tracking-tight text-slate-950 dark:text-white sm:text-3xl">
-              {tool.name === 'Generator' ? 'Palette Generator' : tool.name}
+              {tool.name === 'Generator' ? 'Color Studio' : tool.name}
             </h2>
 
             <p className="mt-1 max-w-4xl text-sm leading-6 text-slate-500 dark:text-slate-400">
@@ -89,10 +89,10 @@ export function StudioHeader({
           <button
             type="button"
             onClick={onGeneratePalette}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-black text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:shadow-xl"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-950 px-4 text-sm font-black text-white shadow-lg shadow-blue-950/20 transition hover:-translate-y-0.5 hover:shadow-xl"
           >
             <RefreshCw className="h-4 w-4" />
-            <span className="hidden sm:inline">Refresh</span>
+            
           </button>
         </div>
       </div>

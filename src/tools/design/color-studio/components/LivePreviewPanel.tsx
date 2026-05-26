@@ -56,7 +56,7 @@ function AppMockup({
 
   return (
     <div className="overflow-hidden bg-transparent">
-      <div className="p-4">
+      <div className="pb-4">
         <div
           className={`overflow-hidden rounded-[24px] border ${
             isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-200 bg-white'
@@ -146,10 +146,10 @@ function BrandPreviewContent({
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col px-8 pt-4">
       <AppMockup colors={colors} isDark={isDark} />
 
-      <div className="space-y-4 px-4 py-2">
+      <div className="space-y-4 py-2">
         {/* Buttons Section */}
         <div>
           <div className="mb-1.5 flex items-center justify-between">
@@ -171,7 +171,6 @@ function BrandPreviewContent({
             </button>
           </div>
 
-          {/* Clean alignment with outer container borders and individual component labels removed */}
           <div className="grid grid-cols-2 gap-4">
             <button
               className="w-full rounded-xl py-2.5 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90"
@@ -294,6 +293,17 @@ function BrandPreviewContent({
               </div>
             </div>
           </div>
+
+          <div className="mt-3 flex flex-wrap justify-between gap-1 border-t pt-2 text-[9px] font-medium" 
+               style={{ 
+                 borderColor: isDark ? '#1e293b' : '#f1f5f9',
+                 color: isDark ? '#64748b' : '#94a3b8' 
+               }}>
+            <span><strong style={{ color: isDark ? '#94a3b8' : '#64748b' }}>AAA:</strong> 7.0+ (Strict)</span>
+            <span><strong style={{ color: isDark ? '#94a3b8' : '#64748b' }}>AA:</strong> 4.5+ (Standard)</span>
+            <span><strong style={{ color: isDark ? '#94a3b8' : '#64748b' }}>Large:</strong> 3.0+ (Headers)</span>
+            <span><strong style={{ color: isDark ? '#94a3b8' : '#64748b' }}>Fail:</strong> &lt;3.0</span>
+          </div>
         </div>
       </div>
     </div>
@@ -376,8 +386,8 @@ export function LivePreviewPanel({
       ) : (
         <div className={`flex h-full min-h-0 w-full flex-col overflow-hidden ${panelBg}`}>
           
-          {/* Header Panel */}
-          <div className="flex shrink-0 items-center justify-between px-4 py-3">
+          {/* Header Panel - Aligned title with content via px-6 */}
+          <div className="flex shrink-0 items-center justify-between px-8 py-3">
             <div className="leading-none select-none">
               <span className="text-sm font-bold tracking-tight" style={{ color: brandC0 }}>
                 Quick
@@ -387,28 +397,16 @@ export function LivePreviewPanel({
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="flex rounded-2xl bg-slate-100 p-1 dark:bg-slate-800">
-                <button
-                  type="button"
-                  onClick={() => onPreviewThemeChange('light')}
-                  className={`flex h-8 w-8 items-center justify-center rounded-xl transition-all ${
-                    !previewIsDark ? 'bg-white shadow-sm' : 'text-slate-400'
-                  }`}
-                >
-                  <Sun className="h-4 w-4" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onPreviewThemeChange('dark')}
-                  className={`flex h-8 w-8 items-center justify-center rounded-xl transition-all ${
-                    previewIsDark ? 'bg-slate-700 shadow-sm' : 'text-slate-400'
-                  }`}
-                >
-                  <Moon className="h-4 w-4" />
-                </button>
-              </div>
+            <div className="flex items-center gap-1">
+              {/* Simplified Theme Toggle: Single icon reflecting current state */}
+              <button
+                type="button"
+                onClick={() => onPreviewThemeChange(previewIsDark ? 'light' : 'dark')}
+                className="flex h-9 w-9 items-center justify-center rounded-xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-800"
+                title={previewIsDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                {previewIsDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              </button>
 
               <button
                 type="button"
@@ -420,8 +418,7 @@ export function LivePreviewPanel({
             </div>
           </div>
 
-          {/* Main Layout Area - Completely scroll-free on standard panels */}
-          <div className="min-h-0 flex-1 overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <BrandPreviewContent 
               colors={shuffledColors}
               rawColors={visibleColors} 
@@ -430,11 +427,11 @@ export function LivePreviewPanel({
             />
           </div>
 
-          {/* Footer Divider link */}
+          {/* Footer */}
           <div
             className="flex shrink-0 items-center justify-between gap-3 border-t px-4 py-2.5 text-[11px]"
             style={{
-              borderColor: previewIsDark ? '#233148' : '#e2e8f0',
+              borderColor: previewIsDark ? '#233148' : '#f1f5f9',
               background: previewIsDark ? '#0F172A' : '#fff',
             }}
           >
