@@ -1,4 +1,4 @@
-import { Check, Copy, Download, QrCode, Smartphone } from 'lucide-react';
+import { QrCode, Smartphone } from 'lucide-react';
 
 import type { PreviewMode } from '../types';
 
@@ -12,9 +12,6 @@ export function PhonePreview({
   primaryColor,
   secondaryColor,
   frameColor,
-  onDownload,
-  onCopy,
-  copied,
 }: {
   mode: PreviewMode;
   onModeChange: (mode: PreviewMode) => void;
@@ -25,9 +22,9 @@ export function PhonePreview({
   primaryColor: string;
   secondaryColor: string;
   frameColor: string;
-  onDownload: () => void;
-  onCopy: () => void;
-  copied: boolean;
+  onDownload?: () => void;
+  onCopy?: () => void;
+  copied?: boolean;
 }) {
   const qrCanvasClass = '!h-full !w-full rounded-xl object-contain';
 
@@ -39,25 +36,29 @@ export function PhonePreview({
             <button
               type="button"
               onClick={() => onModeChange('preview')}
-              className={`rounded-full px-4 py-2 text-sm font-black transition ${
+              className={`flex h-9 w-9 items-center justify-center rounded-full transition ${
                 mode === 'preview'
                   ? 'bg-white/10 text-white'
                   : 'text-slate-300 hover:text-white'
               }`}
+              aria-label="Show mobile preview"
+              title="Preview"
             >
-              Preview
+              <Smartphone className="h-4 w-4" />
             </button>
 
             <button
               type="button"
               onClick={() => onModeChange('qr')}
-              className={`rounded-full px-4 py-2 text-sm font-black transition ${
+              className={`flex h-9 w-9 items-center justify-center rounded-full transition ${
                 mode === 'qr'
                   ? 'bg-[color:var(--qu-accent)] text-white'
                   : 'text-slate-300 hover:text-white'
               }`}
+              aria-label="Show QR code"
+              title="QR code"
             >
-              QR code
+              <QrCode className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -151,18 +152,6 @@ export function PhonePreview({
               <div className="mx-auto mt-auto h-1.5 w-24 shrink-0 rounded-full bg-black" />
             </div>
           </div>
-        </div>
-
-        <div className="mt-4 grid shrink-0 grid-cols-2 gap-3">
-          <button type="button" onClick={onDownload} className="hub-button">
-            <Download className="h-4 w-4" />
-            Download
-          </button>
-
-          <button type="button" onClick={onCopy} className="hub-secondary-button">
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            {copied ? 'Copied' : 'Copy'}
-          </button>
         </div>
       </div>
     </div>

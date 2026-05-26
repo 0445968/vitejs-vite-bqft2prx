@@ -37,7 +37,7 @@ import {
   
     return (
       <div className="sticky top-16 z-20 shrink-0 border-b border-slate-200 bg-white/95 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/95">
-        <div className="flex h-14 w-full items-center gap-3 pl-8 pr-4 sm:pl-10 sm:pr-6 lg:pl-12 lg:pr-8">
+        <div className="flex h-14 w-full items-center gap-3 px-4 sm:px-6 lg:px-8">
             {/* Dynamic content preview only */}
             <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
             <Link2 className="h-4 w-4 shrink-0 text-slate-400 dark:text-slate-500" />

@@ -20,6 +20,49 @@ const FEATURED_TYPE_IDS: ContentType[] = [
   'wifi',
 ];
 
+function UrlWithHttpsPrefixInput({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}) {
+  const displayValue = value.replace(/^https?:\/\//i, '');
+
+  return (
+    <label className="block">
+      <span className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-[color:var(--qu-muted)]">
+        {label}
+      </span>
+
+      <div className="flex h-12 overflow-hidden rounded-2xl border border-[color:var(--qu-border)] bg-[color:var(--qu-surface-soft)] focus-within:border-[color:var(--qu-accent)]">
+        <div className="flex shrink-0 items-center border-r border-[color:var(--qu-border)] bg-[color:var(--qu-surface)] px-4 text-sm font-black text-[color:var(--qu-muted)]">
+          https://
+        </div>
+
+        <input
+          type="text"
+          inputMode="url"
+          value={displayValue}
+          onChange={(event) => {
+            const cleanValue = event.target.value
+              .replace(/^https?:\/\//i, '')
+              .trim();
+
+            onChange(cleanValue ? `https://${cleanValue}` : '');
+          }}
+          placeholder={placeholder}
+          className="min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-[color:var(--qu-text)] outline-none placeholder:text-[color:var(--qu-muted)]"
+        />
+      </div>
+    </label>
+  );
+}
+
 function ContentForm({
   type,
   data,
@@ -31,12 +74,11 @@ function ContentForm({
 }) {
   if (type === 'link') {
     return (
-      <TextInput
+      <UrlWithHttpsPrefixInput
         label="URL"
-        type="url"
         value={data.link}
         onChange={(value) => update({ link: value })}
-        placeholder="https://example.com"
+        placeholder="example.com"
       />
     );
   }

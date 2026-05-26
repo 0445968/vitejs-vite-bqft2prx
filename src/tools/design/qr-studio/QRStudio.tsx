@@ -26,9 +26,99 @@ import type {
 } from './types';
 import { PhonePreview } from './components/PhonePreview';
 import { QRStudioToolbar } from './components/QRStudioToolbar';
+import { QRStudioHeader } from './components/QRStudioHeader';
 import { ContentStep } from './steps/ContentStep';
 import { DesignStep } from './steps/DesignStep';
 import { LogoStep } from './steps/LogoStep';
+
+const RANDOM_COLORS = [
+  '#2563eb',
+  '#06b6d4',
+  '#22c55e',
+  '#84cc16',
+  '#f97316',
+  '#f59e0b',
+  '#ef4444',
+  '#ec4899',
+  '#8b5cf6',
+  '#14b8a6',
+  '#0f172a',
+  '#111827',
+];
+
+const RANDOM_BG_COLORS = [
+  '#ffffff',
+  '#f8fafc',
+  '#eff6ff',
+  '#ecfeff',
+  '#f0fdf4',
+  '#fff7ed',
+  '#fdf2f8',
+  '#f5f3ff',
+];
+
+const DOT_SHAPES: DotShape[] = [
+  'square',
+  'rounded',
+  'circle',
+  'diamond',
+  'star',
+  'cross',
+  'heart',
+  'leaf',
+];
+
+const EYE_OUTERS: EyeOuter[] = [
+  'sq',
+  'rnd',
+  'cir',
+  'dbl',
+  'brk',
+  'dia',
+  'dts',
+  'shld',
+];
+
+const EYE_INNERS: EyeInner[] = [
+  'sq',
+  'rnd',
+  'cir',
+  'dia',
+  'str',
+  'crs',
+  'rng',
+  'hrt',
+];
+
+const FRAME_STYLES: FrameStyle[] = [
+  'none',
+  'thin',
+  'round',
+  'dbl',
+  'scan',
+  'lblb',
+  'lblt',
+  'pol',
+  'badge',
+  'cert',
+];
+
+const GRADIENT_DIRECTIONS: GradientDirection[] = [
+  'diag',
+  'h',
+  'v',
+  'rad',
+];
+
+const ERROR_CORRECTION_LEVELS: ErrorCorrection[] = [
+  'M',
+  'Q',
+  'H',
+];
+
+function pickRandom<T>(items: T[]) {
+  return items[Math.floor(Math.random() * items.length)];
+}
 
 export default function QRStudio() {
   const [type, setType] = useState<ContentType>('link');
@@ -180,6 +270,37 @@ export default function QRStudio() {
     link.click();
   };
 
+  const randomizeQrDesign = () => {
+    const primary = pickRandom(RANDOM_COLORS);
+    const secondary = pickRandom(RANDOM_COLORS);
+    const accent = pickRandom(RANDOM_COLORS);
+    const background = pickRandom(RANDOM_BG_COLORS);
+    const backgroundAccent = pickRandom(RANDOM_BG_COLORS);
+  
+    setDotShape(pickRandom(DOT_SHAPES));
+    setDotColor(primary);
+    setUseGradient(Math.random() > 0.35);
+    setDotColor2(secondary);
+    setGradDir(pickRandom(GRADIENT_DIRECTIONS));
+  
+    setBgType(Math.random() > 0.65 ? 'gr' : 'solid');
+    setBgColor(background);
+    setBgColor2(backgroundAccent);
+    setBgDir(pickRandom(GRADIENT_DIRECTIONS));
+  
+    setEyeOuter(pickRandom(EYE_OUTERS));
+    setEyeInner(pickRandom(EYE_INNERS));
+    setUseEyeColor(Math.random() > 0.3);
+    setEyeOuterColor(accent);
+    setEyeInnerColor(primary);
+  
+    setFrameStyle(pickRandom(FRAME_STYLES));
+    setFrameColor(secondary);
+    setFrameTextColor('#ffffff');
+  
+    setEc(pickRandom(ERROR_CORRECTION_LEVELS));
+  };
+
   const copyToClipboard = () => {
     if (!canvasRef.current) return;
 
@@ -202,47 +323,29 @@ export default function QRStudio() {
   };
 
   return (
-    <section className="w-full min-h-[calc(100dvh-4.5rem)] bg-[color:var(--qu-surface)]">
-      <QRStudioToolbar
-        copied={copied}
-        currentType={type}
-        destination={getToolbarDestination(type, data)}
-        dynamicQr={dynamicQr}
-        dynamicId={dynamicId}
-        onCopy={copyToClipboard}
-        onDownload={download}
-      />
+    <section className="min-h-[calc(100dvh-4rem)] bg-slate-50 dark:bg-slate-950">
+      <div className="xl:ml-[76px]">
+        <QRStudioToolbar
+          copied={copied}
+          currentType={type}
+          destination={getToolbarDestination(type, data)}
+          dynamicQr={dynamicQr}
+          dynamicId={dynamicId}
+          onCopy={copyToClipboard}
+          onDownload={download}
+        />
   
-      <div className="grid w-full min-h-[calc(100dvh-8rem)] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_460px]">
-        {/* Left editor: page scroll only, no internal scrollbar */}
-        <main className="min-w-0 border-r border-transparent lg:border-[color:var(--qu-border)]">
-          <div className="w-full px-6 py-6 sm:px-8 lg:px-8 lg:py-8">
-            <div className="w-full">
-              <div className="mb-6 flex items-start gap-4">
-                <div className="mt-1 hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[color:var(--qu-accent-soft)] text-[color:var(--qu-accent-strong)] sm:flex">
-                  <QrCode className="h-5 w-5" />
-                </div>
-  
-                <div>
-                  <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <span className="hub-badge">Local canvas</span>
-                    <span className="hub-badge">Phone preview</span>
-                    {dynamicQr && (
-                      <span className="hub-badge">Dynamic ID {dynamicId}</span>
-                    )}
-                  </div>
-  
-                  <h2 className="text-3xl font-black tracking-tight text-[color:var(--qu-text)]">
-                    QR Code Generator
-                  </h2>
-  
-                  <p className="mt-2 max-w-2xl text-sm leading-6 hub-muted">
-                    Build a branded QR code with content types, colors, stickers,
-                    logos, and a live mobile preview.
-                  </p>
-                </div>
-              </div>
-  
+        <div className="min-h-[calc(100dvh-7.5rem)] xl:grid xl:grid-cols-[minmax(0,1fr)_420px] 2xl:grid-cols-[minmax(0,1fr)_460px]">
+          {/* Left editor: page scroll only, no internal scrollbar */}
+          <div className="min-w-0">
+          <QRStudioHeader
+          type={type}
+          errorCorrection={ec}
+          onErrorCorrectionChange={setEc}
+          onRandomize={randomizeQrDesign}
+          />
+           <main className="min-w-0 bg-slate-50 px-4 py-5 dark:bg-slate-950 sm:px-6 lg:px-8">
+                
               <div className="space-y-4 pb-10">
                 <ContentStep
                   open={openStep === 'content'}
@@ -319,32 +422,32 @@ export default function QRStudio() {
                   setEc={setEc}
                 />
               </div>
-            </div>
+            </main>
           </div>
-        </main>
   
-        {/* Right preview: sticky, not collapsible */}
-        <aside className="border-t border-[color:var(--qu-border)] bg-[color:var(--qu-surface-soft)] p-4 sm:p-6 lg:sticky lg:top-[8rem] lg:h-[calc(100dvh-8rem)] lg:self-start lg:overflow-hidden lg:border-t-0">
-          <PhonePreview
-            mode={previewMode}
-            onModeChange={setPreviewMode}
-            canvasRef={canvasRef}
-            qrReady={qrReady}
-            title={data.evTitle || data.vcFirst || 'QuickUtility QR'}
-            subtitle={
-              data.text ||
-              data.link ||
-              data.socialUrl ||
-              'Branded QR destination preview'
-            }
-            primaryColor={dotColor2}
-            secondaryColor={bgColor2}
-            frameColor={frameColor}
-            onDownload={download}
-            onCopy={copyToClipboard}
-            copied={copied}
-          />
-        </aside>
+          {/* Right preview: sticky, not collapsible */}
+          <aside className="border-t border-slate-200 bg-slate-100 p-4 sm:p-6 dark:border-slate-800 dark:bg-slate-900 xl:sticky xl:top-[7.5rem] xl:block xl:h-[calc(100dvh-7.5rem)] xl:self-start xl:overflow-hidden xl:border-t-0">
+            <PhonePreview
+              mode={previewMode}
+              onModeChange={setPreviewMode}
+              canvasRef={canvasRef}
+              qrReady={qrReady}
+              title={data.evTitle || data.vcFirst || 'QuickUtility QR'}
+              subtitle={
+                data.text ||
+                data.link ||
+                data.socialUrl ||
+                'Branded QR destination preview'
+              }
+              primaryColor={dotColor2}
+              secondaryColor={bgColor2}
+              frameColor={frameColor}
+              onDownload={download}
+              onCopy={copyToClipboard}
+              copied={copied}
+            />
+          </aside>
+        </div>
       </div>
     </section>
   );
