@@ -34,12 +34,13 @@ import {
   UUIDGeneratorTool,
 } from '../tools/developer';
 
-import { ColorStudio, QRStudio } from '../tools/design';
+import { BarcodeStudio, ColorStudio, QRStudio } from '../tools/design';
+import { FileConverter } from '../tools/utility/file-converter';
 
 export type ToolCategorySlug =
   | 'developer'
   | 'text'
-  | 'files'
+  | 'utility'
   | 'data'
   | 'security'
   | 'business'
@@ -263,33 +264,45 @@ export const toolCategories: ToolCategory[] = [
     })),
   },
   {
-    slug: 'files',
+    slug: 'utility',
     name: 'File / PDF / Image Tools',
     eyebrow: 'Media utilities',
     description:
       'Compress, convert, inspect, resize, split, merge, and optimize files and images.',
     icon: Image,
     tools: [
-      'Duplicate File Finder',
-      'Image Compressor',
-      'PDF Compressor',
-      'PDF Merger',
-      'PDF Splitter',
-      'Image to PDF Converter',
-      'PDF to Image Converter',
-      'EXIF Metadata Viewer',
-      'Favicon Generator',
-      'Image Resizer',
-      'Aspect Ratio Calculator',
-      'SVG Optimizer',
-      'Icon Generator',
-    ].map((name) => ({
-      id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-      name,
-      description: `${name} is planned for this category.`,
-      icon: FileArchive,
-      status: 'soon' as const,
-    })),
+      {
+        id: 'file-converter',
+        name: 'File Converter',
+        description: 'Convert images and text files directly in your browser.',
+        icon: FileArchive,
+        component: FileConverter,
+        status: 'ready',
+        layout: 'immersive',
+        keywords: ['pdf', 'doc', 'docs', 'word', 'document', 'image', 'convert'],
+      },
+      ...[
+        'Duplicate File Finder',
+        'Image Compressor',
+        'PDF Compressor',
+        'PDF Merger',
+        'PDF Splitter',
+        'Image to PDF Converter',
+        'PDF to Image Converter',
+        'EXIF Metadata Viewer',
+        'Favicon Generator',
+        'Image Resizer',
+        'Aspect Ratio Calculator',
+        'SVG Optimizer',
+        'Icon Generator',
+      ].map((name) => ({
+        id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        name,
+        description: `${name} is planned for this category.`,
+        icon: FileArchive,
+        status: 'soon' as const,
+      })),
+    ],
   },
   {
     slug: 'data',
@@ -379,6 +392,16 @@ export const toolCategories: ToolCategory[] = [
         layout: 'immersive',
         keywords: ['qr', 'qr code', 'barcode', 'scan', 'generator'],
       },
+            {
+        id: 'barcode-generator',
+        name: 'Barcode Generator',
+        description: 'Create scanner-ready barcodes for products, labels, and inventory.',
+        icon: Barcode,
+        component: BarcodeStudio,
+        status: 'ready',
+        layout: 'immersive',
+        keywords: ['barcode', 'scan', 'ean', 'itf', 'msi', 'generator', 'upc'],
+      },
       {
         id: 'color-studio',
         name: 'Color Studio',
@@ -389,13 +412,6 @@ export const toolCategories: ToolCategory[] = [
         status: 'ready',
         layout: 'immersive',
         keywords: ['color', 'palette', 'coolors', 'gradient', 'contrast', 'hex', 'css'],
-      },
-      {
-        id: 'barcode-generator',
-        name: 'Barcode Generator',
-        description: 'Generate EAN, UPC, and other barcode formats.',
-        icon: Barcode,
-        status: 'soon',
       },
       {
         id: 'contrast-checker',

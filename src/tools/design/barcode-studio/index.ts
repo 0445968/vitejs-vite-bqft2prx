@@ -1,0 +1,1 @@
+export { BarcodeStudio } from './BarcodeStudio';
