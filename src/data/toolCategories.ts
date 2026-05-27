@@ -7,11 +7,15 @@ import {
   Database,
   FileArchive,
   FileCode2,
+  FileImage,
   FileJson,
   FileText,
+  FileType,
+  FileVideo,
   Fingerprint,
   Hash,
   Image,
+  Images,
   KeyRound,
   Link2,
   Network,
@@ -35,7 +39,13 @@ import {
 } from '../tools/developer';
 
 import { BarcodeStudio, ColorStudio, QRStudio } from '../tools/design';
-import { FileConverter } from '../tools/utility/file-converter';
+import {
+  MediaConverter,
+  ImageConverter,
+  DocumentConverter,
+  PDFConverter,
+  GIFConverter,
+} from '../tools/utility';
 
 export type ToolCategorySlug =
   | 'developer'
@@ -272,14 +282,54 @@ export const toolCategories: ToolCategory[] = [
     icon: Image,
     tools: [
       {
-        id: 'file-converter',
-        name: 'File Converter',
-        description: 'Convert images and text files directly in your browser.',
-        icon: FileArchive,
-        component: FileConverter,
+        id: 'media-converter',
+        name: 'Media Converter',
+        description: 'Convert video and media files across popular formats.',
+        icon: FileVideo,
+        component: MediaConverter,
         status: 'ready',
         layout: 'immersive',
-        keywords: ['pdf', 'doc', 'docs', 'word', 'document', 'image', 'convert'],
+        keywords: ['video', 'media', 'mp4', 'mov', 'avi', 'mkv'],
+      },
+      {
+        id: 'image-converter',
+        name: 'Image Converter',
+        description: 'Convert images across web, print, raw, and archive formats.',
+        icon: FileImage,
+        component: ImageConverter,
+        status: 'ready',
+        layout: 'immersive',
+        keywords: ['image', 'jpg', 'png', 'webp', 'heic', 'raw'],
+      },
+      {
+        id: 'document-converter',
+        name: 'Document Converter',
+        description: 'Convert documents, spreadsheets, presentations, and text files.',
+        icon: FileText,
+        component: DocumentConverter,
+        status: 'ready',
+        layout: 'immersive',
+        keywords: ['doc', 'docx', 'word', 'excel', 'ppt', 'text'],
+      },
+      {
+        id: 'pdf-converter',
+        name: 'PDF Converter',
+        description: 'Convert PDFs to documents, images, ebooks, and back to PDF.',
+        icon: FileType,
+        component: PDFConverter,
+        status: 'ready',
+        layout: 'immersive',
+        keywords: ['pdf', 'docx', 'jpg', 'png', 'excel', 'ppt'],
+      },
+      {
+        id: 'gif-converter',
+        name: 'GIF Converter',
+        description: 'Create GIFs from video or images and convert GIFs to modern formats.',
+        icon: Images,
+        component: GIFConverter,
+        status: 'ready',
+        layout: 'immersive',
+        keywords: ['gif', 'mp4 to gif', 'video to gif', 'apng'],
       },
       ...[
         'Duplicate File Finder',
